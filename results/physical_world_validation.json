@@ -1,0 +1,9 @@
+{
+  "source": "Isolated native Gazebo underwater physics; held thruster commands",
+  "partition": "tidewatch_physics_30cfb5e8551d4b90892d792ab716102e",
+  "world": "src/underwater_system/worlds/tidewatch.sdf",
+  "all_checks_passed": false,
+  "checks": {},
+  "scope": "Simulation dynamics smoke checks; uncalibrated hydrodynamics and actuator coefficients.",
+  "error": "Timed out waiting for simulation time 0.100s and three fresh model poses; see /home/khalifa/Desktop/SDP/results/physical_world_validation.log"
+}

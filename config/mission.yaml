@@ -1,0 +1,61 @@
+# ENU: x east, y north, z up. Distances metres, time seconds.
+seed: 7
+mission_mode: protect
+# Planner settings are shared by the software harness and ROS edge nodes.
+exploration:
+  bounds: [[-24.0, 24.0], [-24.0, 24.0]]
+  origin: [0.0, 0.0, -10.0]
+  depth_layers: [-10.0]
+  cell_size: 3.0
+  waypoint_spacing: 6.0
+  max_duration: 240.0
+  distance_budget: 180.0
+  uncertainty_limit: 2.5
+sensor_rate: 5.0
+formation_radius: 6.0
+protected_radius: 4.0
+speed_limit: 1.3
+sensor_range: 28.0
+map_resolution: 1.0
+navigation_noise: 0.08
+navigation_drift_rate: 0.008
+ocean_current: [0.0, 0.0, 0.0]
+propulsion:
+  control_rate_hz: 20.0
+  max_thrust_n: 80.0
+  velocity_gain: 1.4
+  integral_gain: 0.25
+  attitude_gain: 4.0
+  angular_damping: 3.0
+  thruster_time_constant_s: 0.12
+  thrust_slew_n_s: 240.0
+  propeller_diameter_m: 0.12
+perception:
+  sample_rate_hz: 8000
+  # Optional PCM16 WAV at this sample rate; null keeps synthetic audio.
+  hydrophone_recording: null
+  hydrophone_recording_loop: false
+  unknown_threshold: 0.62
+  acoustic_model_path: null
+  sonar_model_path: null
+  # A hydrophone hears the whole scene; no per-target audio association assumed.
+  acoustic_target_associated: false
+acoustic:
+  slot_duration: 0.4
+  bitrate: 9600
+  loss_probability: 0.12
+  delay_min: 0.15
+  delay_max: 0.8
+  ttl: 4.0
+gateway:
+  burst_interval: 3.0
+  # Set true for actual periodic surfacing; the three-node perimeter degrades.
+  require_surface: false
+  surface_interval: 90.0
+  surface_duration: 25.0
+dashboard:
+  host: 127.0.0.1
+  port: 8080
+mqtt:
+  host: 127.0.0.1
+  port: 1883

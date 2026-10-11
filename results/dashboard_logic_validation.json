@@ -1,0 +1,157 @@
+{
+  "validation": "GJS mocked DOM/canvas fixture; no live browser available",
+  "passed": 37,
+  "total": 37,
+  "checks": [
+    {
+      "label": "Initial mission matches controller telemetry",
+      "passed": true
+    },
+    {
+      "label": "Fresh telemetry enables mission selection",
+      "passed": true
+    },
+    {
+      "label": "Protection meter reports connected fleet ratio",
+      "passed": true
+    },
+    {
+      "label": "Contact table exposes measured closest approach",
+      "passed": true
+    },
+    {
+      "label": "Scene renders measured cells, contacts, goals and null mission reports",
+      "passed": true
+    },
+    {
+      "label": "Survey mode sends validated API payload",
+      "passed": true
+    },
+    {
+      "label": "Queued mode retains acknowledged active mission",
+      "passed": true
+    },
+    {
+      "label": "Mode is not confirmed until revision advances",
+      "passed": true
+    },
+    {
+      "label": "Advanced fresh revision confirms mode",
+      "passed": true
+    },
+    {
+      "label": "Survey hides diver and disables manual pilot",
+      "passed": true
+    },
+    {
+      "label": "Survey meter uses reported measured coverage",
+      "passed": true
+    },
+    {
+      "label": "Rejected mode leaves actionable inline error",
+      "passed": true
+    },
+    {
+      "label": "Manual pilot awaits controller acknowledgement",
+      "passed": true
+    },
+    {
+      "label": "Acknowledged manual mode enables pilot",
+      "passed": true
+    },
+    {
+      "label": "North key commands maximum permitted speed",
+      "passed": true
+    },
+    {
+      "label": "Combined pilot axes normalize speed",
+      "passed": true
+    },
+    {
+      "label": "Held movement starts a single heartbeat",
+      "passed": true
+    },
+    {
+      "label": "Heartbeat refreshes the controller deadman",
+      "passed": true
+    },
+    {
+      "label": "Releasing every key sends stop and ends heartbeat",
+      "passed": true
+    },
+    {
+      "label": "Editing current inputs cannot move the diver",
+      "passed": true
+    },
+    {
+      "label": "Q commands descent",
+      "passed": true
+    },
+    {
+      "label": "Space sends immediate stop",
+      "passed": true
+    },
+    {
+      "label": "Key repeat cannot restart movement after an explicit stop",
+      "passed": true
+    },
+    {
+      "label": "E commands ascent",
+      "passed": true
+    },
+    {
+      "label": "Window blur stops movement",
+      "passed": true
+    },
+    {
+      "label": "On-screen hold starts pilot movement",
+      "passed": true
+    },
+    {
+      "label": "Canceled pointer sends stop",
+      "passed": true
+    },
+    {
+      "label": "Stale telemetry disables pilot and sends stop",
+      "passed": true
+    },
+    {
+      "label": "Stale telemetry disables mode selection",
+      "passed": true
+    },
+    {
+      "label": "Camera arrow-key focus never pilots the diver",
+      "passed": true
+    },
+    {
+      "label": "Synthetic hydrophone source is visible",
+      "passed": true
+    },
+    {
+      "label": "Recorded hydrophone source and loop are visible",
+      "passed": true
+    },
+    {
+      "label": "Recorded source limitations preserve honest contact association",
+      "passed": true
+    },
+    {
+      "label": "Accessible hold button supports Enter key",
+      "passed": true
+    },
+    {
+      "label": "Accessible hold button release sends stop",
+      "passed": true
+    },
+    {
+      "label": "Paused mission disables pilot and explains the suspension",
+      "passed": true
+    },
+    {
+      "label": "Rejected movement disables pilot and ends heartbeat",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "command_count": 19
+}

@@ -1,0 +1,5 @@
+newmtl tidewatch_thruster_duct
+Ka 0.24 0.31 0.35
+Kd 0.24 0.31 0.35
+Ks 0.18 0.18 0.18
+Ns 40

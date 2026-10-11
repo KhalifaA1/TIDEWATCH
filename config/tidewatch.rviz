@@ -1,0 +1,57 @@
+Panels:
+  - Class: rviz_common/Displays
+    Name: Displays
+  - Class: rviz_common/Views
+    Name: Views
+Visualization Manager:
+  Class: ""
+  Global Options:
+    Fixed Frame: map
+    Frame Rate: 30
+    Background Color: 6; 22; 32
+  Displays:
+    - Class: rviz_default_plugins/Grid
+      Name: ENU Reference Grid
+      Enabled: true
+      Cell Size: 2
+      Plane: XY
+      Plane Cell Count: 50
+      Offset: {X: 0, Y: 0, Z: -20}
+      Color: 30; 68; 79
+    - Class: rviz_default_plugins/MarkerArray
+      Name: Swarm, Diver, Tracks and Protected Zone
+      Enabled: true
+      Topic:
+        Value: /tidewatch/markers
+        Reliability Policy: Reliable
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Depth: 5
+    - Class: rviz_default_plugins/PointCloud2
+      Name: Measured Persistent Map
+      Enabled: true
+      Topic:
+        Value: /tidewatch/map/points
+        Reliability Policy: Reliable
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Depth: 5
+      Style: Points
+      Size (Pixels): 4
+      Color Transformer: AxisColor
+      Axis: Z
+    - Class: rviz_default_plugins/TF
+      Name: Estimated Vehicle Frames
+      Enabled: true
+      Show Names: true
+      Show Axes: true
+  Views:
+    Current:
+      Class: rviz_default_plugins/Orbit
+      Distance: 45
+      Focal Point: {X: 0, Y: 0, Z: -12}
+      Pitch: 0.5
+      Yaw: 0.8
+Window Geometry:
+  Width: 1200
+  Height: 800

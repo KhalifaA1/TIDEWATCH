@@ -1,0 +1,20 @@
+{
+  "source": "Actual live Gazebo / ROS telemetry at http://127.0.0.1:8080",
+  "mission_controls_mutated": false,
+  "desktop": {
+    "connection": "GATEWAY CONNECTED",
+    "current": "E 0.00 / N 0.00 / UP 0.00",
+    "currentSpeed": "0.00m/s",
+    "propulsion": "Gazebo force-driven thrusters",
+    "thrust": "Peak thrust 42%",
+    "classifier": "Numeric feature baseline \u00b7 synthetic sensing",
+    "fleet": "\u25c8AUV 007.0 m DEPTH \u00b7 0.25 m/sTHRUST 42% \u00b7 99 W EST.ONLINE\u00b10.26 m\u25c8AUV 019.1 m DEPTH \u00b7 0.07 m/sTHRUST 15% \u00b7 34 W EST.ONLINE\u00b10.26 m\u25c8AUV 029.5 m DEPTH \u00b7 0.10 m/sTHRUST 25% \u00b7 34 W EST.ONLINE\u00b10.26 m",
+    "tracks": "4",
+    "trackRows": "Marine lifetrack-002-12.1 / -11.8 / -8.487%\u00b10.55 mInfoObstacletrack-00310.5 / 4.2 / -18.090%\u00b10.86 mInfoUnknown objecttrack-004-4.3 / 11.6 / -11.791%\u00b10.53 mWarningVehicletrack-00517.7 / 2.8 / -9.791%\u00b10.57 mInfo",
+    "info": "AUV thruster forces are integrated by Gazebo with buoyancy, hydrodynamic drag, and the selected water current. Thrust is limited; displayed power is a model estimate. Acoustic noise, echoes, localization drift, and network outages are simulated. Physical hardware behavior still requires field validation.",
+    "clock": "00:03:15",
+    "errors": [],
+    "overflow": false
+  },
+  "screenshot": "results/dashboard.png"
+}

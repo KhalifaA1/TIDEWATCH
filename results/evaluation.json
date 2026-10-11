@@ -1,0 +1,3003 @@
+{
+  "schema_version": 1,
+  "evaluation_type": "seeded_offline_software_harness",
+  "seed": 7,
+  "duration_s": 60.0,
+  "passed": true,
+  "method": {
+    "coordinates": "ENU metres; z up",
+    "motion": "Numerical first-order response with a modest current, not Gazebo",
+    "mapping_truth": "Analytic seabed_height fixture; not the Gazebo seabed/structures",
+    "network_fault": "auv_1 acoustic-link blackout; its autonomy continues running",
+    "classification": "Untrained synthetic feature/template baseline with synthetic class-tag silhouette cues",
+    "reproducibility": "Same sensor and navigation seeds; network paths diverge after packet-loss draws.",
+    "claim_limit": "These measurements do not validate real sensing, trained AI, physical protection, Gazebo physics, or hardware."
+  },
+  "scenarios": {
+    "nominal": {
+      "name": "nominal",
+      "duration_s": 60.0,
+      "seed": 7,
+      "integration_step_s": 0.2,
+      "configured_packet_loss": 0.12,
+      "all_applicable_checks_passed": true,
+      "metrics": {
+        "mapping_rmse_m": 0.03558172983280133,
+        "coverage_fraction": 0.23777777777777778,
+        "elevation_samples": 856,
+        "elapsed_s": 60.0,
+        "seed": 7,
+        "localization_rmse_m": 0.027478452104723158,
+        "sonar_position_rmse_m": 0.20591402369706616,
+        "tracking_rmse_m": 0.6654488999597639,
+        "classification_accuracy": 1.0,
+        "matched_track_classification_accuracy": 1.0,
+        "sensor_observations": 599,
+        "unknown_observations": 164,
+        "mission_mode": "protect",
+        "formation_rmse_m": 2.0769032948152617,
+        "mission_target_rmse_m": 2.0769032948152617,
+        "exploration_coverage_pct": 47.27,
+        "minimum_auv_separation_m": 6.1739432755276145,
+        "minimum_wildlife_clearance_m": 2.4276596231198107,
+        "minimum_seabed_clearance_m": 7.38650930219188,
+        "packet_delivery_ratio": 0.8933333333333333,
+        "classifier": "synthetic feature/template baseline; no trained AI",
+        "motion_authority": "offline numerical harness"
+      },
+      "network": {
+        "enqueued": 150,
+        "transmitted": 150,
+        "delivered": 134,
+        "lost": 13,
+        "expired": 0,
+        "expired_inflight": 0,
+        "queue_overflow": 0,
+        "oversize_rejected": 0,
+        "raw_audio_rejected": 0,
+        "outages": 0,
+        "reconnections": 0,
+        "superseded_on_reconnect": 0,
+        "duplicate_injected": 0,
+        "duplicate_discarded": 0,
+        "bytes_transmitted": 37903,
+        "protocol": "acoustic_tdma",
+        "bitrate_bps": 9600,
+        "slot_duration_s": 0.4,
+        "max_packet_bytes": 456,
+        "loss_probability": 0.12,
+        "loss_rate": 0.08666666666666667,
+        "queued": 0,
+        "delivery_ratio": 0.8933333333333333,
+        "mean_latency_s": 1.3316980408462136,
+        "queue_depth": {
+          "auv_0": 0,
+          "auv_1": 0,
+          "auv_2": 0
+        },
+        "connected": {
+          "auv_0": true,
+          "auv_1": true,
+          "auv_2": true
+        },
+        "last_delivery": {
+          "auv_0": 59.38418653192092,
+          "auv_1": 58.517538364826216,
+          "auv_2": 59.08836688317292
+        }
+      },
+      "classification": {
+        "labels": [
+          "unknown",
+          "diver",
+          "marine_life",
+          "vehicle",
+          "obstacle"
+        ],
+        "confusion_matrix": {
+          "unknown": {
+            "unknown": 164,
+            "diver": 0,
+            "marine_life": 0,
+            "vehicle": 0,
+            "obstacle": 0
+          },
+          "diver": {
+            "unknown": 0,
+            "diver": 0,
+            "marine_life": 0,
+            "vehicle": 0,
+            "obstacle": 0
+          },
+          "marine_life": {
+            "unknown": 0,
+            "diver": 0,
+            "marine_life": 216,
+            "vehicle": 0,
+            "obstacle": 0
+          },
+          "vehicle": {
+            "unknown": 0,
+            "diver": 0,
+            "marine_life": 0,
+            "vehicle": 85,
+            "obstacle": 0
+          },
+          "obstacle": {
+            "unknown": 0,
+            "diver": 0,
+            "marine_life": 0,
+            "vehicle": 0,
+            "obstacle": 134
+          }
+        },
+        "precision_by_class": {
+          "unknown": 1.0,
+          "diver": null,
+          "marine_life": 1.0,
+          "vehicle": 1.0,
+          "obstacle": 1.0
+        },
+        "recall_by_class": {
+          "unknown": 1.0,
+          "diver": null,
+          "marine_life": 1.0,
+          "vehicle": 1.0,
+          "obstacle": 1.0
+        },
+        "micro_precision": 1.0,
+        "observations": 599,
+        "scope": "Synthetic acoustic templates and class-tag silhouette cues; untrained baseline."
+      },
+      "tracking_at_end": {
+        "association": "Greedy one-to-one position association within 4 m; truth IDs unused by tracker.",
+        "tracks": 4,
+        "truth_objects": 6,
+        "matched_tracks": 4,
+        "unmatched_tracks": 0,
+        "unmatched_objects": 2,
+        "duplicate_candidates": 0,
+        "position_rmse_m": 0.665448899959764,
+        "precision": 1.0,
+        "recall": 0.6666666666666666
+      },
+      "uncertainty": {
+        "nominal_position_ellipsoid_probability": 0.95,
+        "mahalanobis_squared_threshold": 7.814727903251179,
+        "empirical_position_coverage": 0.989983305509182,
+        "observations": 599
+      },
+      "safety": {
+        "minimum_auv_diver_clearance_m": 4.126403107542804,
+        "maximum_command_speed_m_s": 1.3,
+        "first_intruder_alert_s": 13.399999999999984,
+        "intruder_protected_zone_entry_s": 33.59999999999994,
+        "alert_lead_time_s": 20.199999999999953,
+        "alert_time_steps_by_severity": {
+          "info": 666,
+          "watch": 407,
+          "warning": 96,
+          "critical": 106
+        }
+      },
+      "fault_events": [],
+      "recovery_latency_s": null,
+      "inflight_first_delivery_after_disconnect_s": null,
+      "checks": [
+        {
+          "name": "finite_bounded_commands",
+          "status": "passed",
+          "measured": 1.3,
+          "criterion": "All command components finite; maximum commanded speed <= 1.3 m/s."
+        },
+        {
+          "name": "auv_separation",
+          "status": "passed",
+          "measured": 6.1739432755276145,
+          "criterion": "Minimum pairwise AUV centre separation >= 2.4 m."
+        },
+        {
+          "name": "wildlife_clearance",
+          "status": "passed",
+          "measured": 2.4276596231198107,
+          "criterion": "Synthetic wildlife and AUV surfaces stay >= 0.8 m apart."
+        },
+        {
+          "name": "seabed_clearance",
+          "status": "passed",
+          "measured": 7.38650930219188,
+          "criterion": "Synthetic AUV surface stays >= 1 m above the analytic seabed."
+        },
+        {
+          "name": "diver_clearance",
+          "status": "passed",
+          "measured": 4.126403107542804,
+          "criterion": "Every AUV stays at least 2.4 m from the diver centre."
+        },
+        {
+          "name": "mapping_accuracy",
+          "status": "passed",
+          "measured": 0.03558172983280133,
+          "criterion": "Observed analytic-harness seabed elevation RMSE <= one map voxel."
+        },
+        {
+          "name": "sensor_position_accuracy",
+          "status": "passed",
+          "measured": 0.20591402369706616,
+          "criterion": "Synthetic sonar detection position RMSE <= 1 m."
+        },
+        {
+          "name": "synthetic_classifier",
+          "status": "passed",
+          "measured": 1.0,
+          "criterion": "At least 10 synthetic detections and classification accuracy >= 0.75."
+        },
+        {
+          "name": "capacity_and_queues",
+          "status": "passed",
+          "measured": {
+            "bytes_including_headers": 41503,
+            "slot_budget_bytes": 72480.0,
+            "maximum_queue_depth": 1
+          },
+          "criterion": "Transmitted bytes including headers fit scheduled slot capacity; queues <= configured maximum."
+        },
+        {
+          "name": "delivery_ratio",
+          "status": "passed",
+          "measured": 0.8933333333333333,
+          "criterion": "Deduplicated delivered / transmitted packets is within [0, 1]."
+        },
+        {
+          "name": "approach_alert_before_entry",
+          "status": "passed",
+          "measured": {
+            "first_alert_s": 13.399999999999984,
+            "protected_zone_entry_s": 33.59999999999994
+          },
+          "criterion": "A warning/critical alert associated geometrically with the approaching object precedes its 4 m zone entry."
+        }
+      ],
+      "time_series": [
+        {
+          "time_s": 0.2,
+          "packet_delivery_ratio": 0.0,
+          "formation_rmse_m": 0.025023370584998882,
+          "occupied_voxels": 67,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 0,
+            "auv_1": 0,
+            "auv_2": 0
+          }
+        },
+        {
+          "time_s": 1.0,
+          "packet_delivery_ratio": 0.5,
+          "formation_rmse_m": 0.27178519411190544,
+          "occupied_voxels": 122,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 1,
+            "auv_1": 0,
+            "auv_2": 1
+          }
+        },
+        {
+          "time_s": 2.0,
+          "packet_delivery_ratio": 0.6,
+          "formation_rmse_m": 0.5862678625186759,
+          "occupied_voxels": 165,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 3.0,
+          "packet_delivery_ratio": 0.7142857142857143,
+          "formation_rmse_m": 0.8461772920474175,
+          "occupied_voxels": 204,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 4.0,
+          "packet_delivery_ratio": 0.7,
+          "formation_rmse_m": 1.0313571356067377,
+          "occupied_voxels": 235,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 5.0,
+          "packet_delivery_ratio": 0.8333333333333334,
+          "formation_rmse_m": 1.1073124475987768,
+          "occupied_voxels": 295,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 6.0,
+          "packet_delivery_ratio": 0.8666666666666667,
+          "formation_rmse_m": 1.0906966235704518,
+          "occupied_voxels": 326,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 7.0,
+          "packet_delivery_ratio": 0.8823529411764706,
+          "formation_rmse_m": 1.0567352850394143,
+          "occupied_voxels": 357,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 8.0,
+          "packet_delivery_ratio": 0.8,
+          "formation_rmse_m": 1.0638266455556926,
+          "occupied_voxels": 384,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 1,
+            "auv_2": 1
+          }
+        },
+        {
+          "time_s": 9.0,
+          "packet_delivery_ratio": 0.8636363636363636,
+          "formation_rmse_m": 1.138412870479839,
+          "occupied_voxels": 407,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 10.0,
+          "packet_delivery_ratio": 0.8,
+          "formation_rmse_m": 1.2205900792754243,
+          "occupied_voxels": 422,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 11.0,
+          "packet_delivery_ratio": 0.8518518518518519,
+          "formation_rmse_m": 1.285870553302638,
+          "occupied_voxels": 440,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 12.0,
+          "packet_delivery_ratio": 0.8333333333333334,
+          "formation_rmse_m": 1.2938847174217414,
+          "occupied_voxels": 457,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 13.0,
+          "packet_delivery_ratio": 0.84375,
+          "formation_rmse_m": 1.2725282514375835,
+          "occupied_voxels": 485,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 14.0,
+          "packet_delivery_ratio": 0.8571428571428571,
+          "formation_rmse_m": 1.2512009902172263,
+          "occupied_voxels": 502,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 15.0,
+          "packet_delivery_ratio": 0.8918918918918919,
+          "formation_rmse_m": 1.2362083402651005,
+          "occupied_voxels": 512,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 16.0,
+          "packet_delivery_ratio": 0.875,
+          "formation_rmse_m": 1.2180192841749242,
+          "occupied_voxels": 527,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 17.0,
+          "packet_delivery_ratio": 0.8571428571428571,
+          "formation_rmse_m": 1.191409753527855,
+          "occupied_voxels": 548,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 18.0,
+          "packet_delivery_ratio": 0.8666666666666667,
+          "formation_rmse_m": 1.1744663774341193,
+          "occupied_voxels": 559,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 19.0,
+          "packet_delivery_ratio": 0.8723404255319149,
+          "formation_rmse_m": 1.1702755160449996,
+          "occupied_voxels": 573,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 20.0,
+          "packet_delivery_ratio": 0.88,
+          "formation_rmse_m": 1.1744361366610985,
+          "occupied_voxels": 582,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 21.0,
+          "packet_delivery_ratio": 0.8846153846153846,
+          "formation_rmse_m": 1.1816343426375877,
+          "occupied_voxels": 595,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 22.0,
+          "packet_delivery_ratio": 0.8727272727272727,
+          "formation_rmse_m": 1.1875796111004537,
+          "occupied_voxels": 602,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 23.0,
+          "packet_delivery_ratio": 0.8947368421052632,
+          "formation_rmse_m": 1.1906071297297083,
+          "occupied_voxels": 614,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 24.0,
+          "packet_delivery_ratio": 0.8833333333333333,
+          "formation_rmse_m": 1.1798044957875433,
+          "occupied_voxels": 623,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 25.0,
+          "packet_delivery_ratio": 0.8870967741935484,
+          "formation_rmse_m": 1.2347600817134503,
+          "occupied_voxels": 645,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 26.0,
+          "packet_delivery_ratio": 0.8769230769230769,
+          "formation_rmse_m": 1.2694966634549876,
+          "occupied_voxels": 657,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 27.0,
+          "packet_delivery_ratio": 0.8955223880597015,
+          "formation_rmse_m": 1.2927401048743536,
+          "occupied_voxels": 660,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 28.0,
+          "packet_delivery_ratio": 0.8714285714285714,
+          "formation_rmse_m": 1.3226701351833812,
+          "occupied_voxels": 666,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 29.0,
+          "packet_delivery_ratio": 0.8888888888888888,
+          "formation_rmse_m": 1.338129587431419,
+          "occupied_voxels": 684,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 30.0,
+          "packet_delivery_ratio": 0.88,
+          "formation_rmse_m": 1.34495012929027,
+          "occupied_voxels": 686,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 31.0,
+          "packet_delivery_ratio": 0.8961038961038961,
+          "formation_rmse_m": 1.35043784922364,
+          "occupied_voxels": 693,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 32.0,
+          "packet_delivery_ratio": 0.8875,
+          "formation_rmse_m": 1.3641764062369282,
+          "occupied_voxels": 706,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 33.0,
+          "packet_delivery_ratio": 0.8780487804878049,
+          "formation_rmse_m": 1.39091790109869,
+          "occupied_voxels": 725,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 34.0,
+          "packet_delivery_ratio": 0.8705882352941177,
+          "formation_rmse_m": 1.424936000036393,
+          "occupied_voxels": 733,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 35.0,
+          "packet_delivery_ratio": 0.8735632183908046,
+          "formation_rmse_m": 1.471446771730019,
+          "occupied_voxels": 740,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 36.0,
+          "packet_delivery_ratio": 0.8666666666666667,
+          "formation_rmse_m": 1.5459727348730803,
+          "occupied_voxels": 747,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 37.0,
+          "packet_delivery_ratio": 0.8804347826086957,
+          "formation_rmse_m": 1.6633755738150966,
+          "occupied_voxels": 757,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 38.0,
+          "packet_delivery_ratio": 0.8631578947368421,
+          "formation_rmse_m": 1.7932107877029306,
+          "occupied_voxels": 759,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 39.0,
+          "packet_delivery_ratio": 0.8762886597938144,
+          "formation_rmse_m": 1.924976288258688,
+          "occupied_voxels": 763,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 40.0,
+          "packet_delivery_ratio": 0.87,
+          "formation_rmse_m": 2.04831403786524,
+          "occupied_voxels": 770,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 41.0,
+          "packet_delivery_ratio": 0.8921568627450981,
+          "formation_rmse_m": 2.130278226734139,
+          "occupied_voxels": 785,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 42.0,
+          "packet_delivery_ratio": 0.8857142857142857,
+          "formation_rmse_m": 2.1659427524510817,
+          "occupied_voxels": 786,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 43.0,
+          "packet_delivery_ratio": 0.8878504672897196,
+          "formation_rmse_m": 2.180330176637486,
+          "occupied_voxels": 794,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 44.0,
+          "packet_delivery_ratio": 0.8818181818181818,
+          "formation_rmse_m": 2.170222842183989,
+          "occupied_voxels": 801,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 45.0,
+          "packet_delivery_ratio": 0.9017857142857143,
+          "formation_rmse_m": 2.1499528037221403,
+          "occupied_voxels": 813,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 46.0,
+          "packet_delivery_ratio": 0.8869565217391304,
+          "formation_rmse_m": 2.1341685508872184,
+          "occupied_voxels": 819,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 47.0,
+          "packet_delivery_ratio": 0.8974358974358975,
+          "formation_rmse_m": 2.121912118684029,
+          "occupied_voxels": 826,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 48.0,
+          "packet_delivery_ratio": 0.8833333333333333,
+          "formation_rmse_m": 2.112309748110211,
+          "occupied_voxels": 837,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 49.0,
+          "packet_delivery_ratio": 0.9016393442622951,
+          "formation_rmse_m": 2.108698533091564,
+          "occupied_voxels": 843,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 50.0,
+          "packet_delivery_ratio": 0.896,
+          "formation_rmse_m": 2.1099780083681017,
+          "occupied_voxels": 847,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 51.0,
+          "packet_delivery_ratio": 0.8976377952755905,
+          "formation_rmse_m": 2.115540823143919,
+          "occupied_voxels": 849,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 52.0,
+          "packet_delivery_ratio": 0.8923076923076924,
+          "formation_rmse_m": 2.12464739878314,
+          "occupied_voxels": 852,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 53.0,
+          "packet_delivery_ratio": 0.8939393939393939,
+          "formation_rmse_m": 2.133673963932495,
+          "occupied_voxels": 862,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 54.0,
+          "packet_delivery_ratio": 0.8888888888888888,
+          "formation_rmse_m": 2.1426994075184562,
+          "occupied_voxels": 865,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 55.0,
+          "packet_delivery_ratio": 0.8978102189781022,
+          "formation_rmse_m": 2.1409738463186074,
+          "occupied_voxels": 872,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 56.0,
+          "packet_delivery_ratio": 0.9,
+          "formation_rmse_m": 2.1338759323273004,
+          "occupied_voxels": 877,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 57.0,
+          "packet_delivery_ratio": 0.9014084507042254,
+          "formation_rmse_m": 2.122501174911599,
+          "occupied_voxels": 886,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 58.0,
+          "packet_delivery_ratio": 0.8896551724137931,
+          "formation_rmse_m": 2.1078165032240244,
+          "occupied_voxels": 895,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 59.0,
+          "packet_delivery_ratio": 0.8979591836734694,
+          "formation_rmse_m": 2.0923606886616626,
+          "occupied_voxels": 901,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 60.0,
+          "packet_delivery_ratio": 0.8933333333333333,
+          "formation_rmse_m": 2.0769032948152617,
+          "occupied_voxels": 904,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        }
+      ]
+    },
+    "high_packet_loss": {
+      "name": "high_packet_loss",
+      "duration_s": 60.0,
+      "seed": 7,
+      "integration_step_s": 0.2,
+      "configured_packet_loss": 0.65,
+      "all_applicable_checks_passed": true,
+      "metrics": {
+        "mapping_rmse_m": 0.03741318146334503,
+        "coverage_fraction": 0.23722222222222222,
+        "elevation_samples": 854,
+        "elapsed_s": 60.0,
+        "seed": 7,
+        "localization_rmse_m": 0.027478452104723154,
+        "sonar_position_rmse_m": 0.206851322609573,
+        "tracking_rmse_m": 0.24375146733871172,
+        "classification_accuracy": 1.0,
+        "matched_track_classification_accuracy": 1.0,
+        "sensor_observations": 596,
+        "unknown_observations": 184,
+        "mission_mode": "protect",
+        "formation_rmse_m": 1.9774826228636102,
+        "mission_target_rmse_m": 1.9774826228636102,
+        "exploration_coverage_pct": 47.27,
+        "minimum_auv_separation_m": 3.1543604329001593,
+        "minimum_wildlife_clearance_m": 3.193844538716393,
+        "minimum_seabed_clearance_m": 7.347734246934472,
+        "packet_delivery_ratio": 0.3,
+        "classifier": "synthetic feature/template baseline; no trained AI",
+        "motion_authority": "offline numerical harness"
+      },
+      "network": {
+        "enqueued": 150,
+        "transmitted": 150,
+        "delivered": 45,
+        "lost": 104,
+        "expired": 0,
+        "expired_inflight": 0,
+        "queue_overflow": 0,
+        "oversize_rejected": 0,
+        "raw_audio_rejected": 0,
+        "outages": 0,
+        "reconnections": 0,
+        "superseded_on_reconnect": 0,
+        "duplicate_injected": 0,
+        "duplicate_discarded": 0,
+        "bytes_transmitted": 38235,
+        "protocol": "acoustic_tdma",
+        "bitrate_bps": 9600,
+        "slot_duration_s": 0.4,
+        "max_packet_bytes": 456,
+        "loss_probability": 0.65,
+        "loss_rate": 0.6933333333333334,
+        "queued": 0,
+        "delivery_ratio": 0.3,
+        "mean_latency_s": 1.2928241881382079,
+        "queue_depth": {
+          "auv_0": 0,
+          "auv_1": 0,
+          "auv_2": 0
+        },
+        "connected": {
+          "auv_0": true,
+          "auv_1": true,
+          "auv_2": true
+        },
+        "last_delivery": {
+          "auv_0": 55.89154457304853,
+          "auv_1": 55.13992243264432,
+          "auv_2": 58.973441143812565
+        }
+      },
+      "classification": {
+        "labels": [
+          "unknown",
+          "diver",
+          "marine_life",
+          "vehicle",
+          "obstacle"
+        ],
+        "confusion_matrix": {
+          "unknown": {
+            "unknown": 184,
+            "diver": 0,
+            "marine_life": 0,
+            "vehicle": 0,
+            "obstacle": 0
+          },
+          "diver": {
+            "unknown": 0,
+            "diver": 5,
+            "marine_life": 0,
+            "vehicle": 0,
+            "obstacle": 0
+          },
+          "marine_life": {
+            "unknown": 0,
+            "diver": 0,
+            "marine_life": 213,
+            "vehicle": 0,
+            "obstacle": 0
+          },
+          "vehicle": {
+            "unknown": 0,
+            "diver": 0,
+            "marine_life": 0,
+            "vehicle": 93,
+            "obstacle": 0
+          },
+          "obstacle": {
+            "unknown": 0,
+            "diver": 0,
+            "marine_life": 0,
+            "vehicle": 0,
+            "obstacle": 101
+          }
+        },
+        "precision_by_class": {
+          "unknown": 1.0,
+          "diver": 1.0,
+          "marine_life": 1.0,
+          "vehicle": 1.0,
+          "obstacle": 1.0
+        },
+        "recall_by_class": {
+          "unknown": 1.0,
+          "diver": 1.0,
+          "marine_life": 1.0,
+          "vehicle": 1.0,
+          "obstacle": 1.0
+        },
+        "micro_precision": 1.0,
+        "observations": 596,
+        "scope": "Synthetic acoustic templates and class-tag silhouette cues; untrained baseline."
+      },
+      "tracking_at_end": {
+        "association": "Greedy one-to-one position association within 4 m; truth IDs unused by tracker.",
+        "tracks": 1,
+        "truth_objects": 6,
+        "matched_tracks": 1,
+        "unmatched_tracks": 0,
+        "unmatched_objects": 5,
+        "duplicate_candidates": 0,
+        "position_rmse_m": 0.24375146733871172,
+        "precision": 1.0,
+        "recall": 0.16666666666666666
+      },
+      "uncertainty": {
+        "nominal_position_ellipsoid_probability": 0.95,
+        "mahalanobis_squared_threshold": 7.814727903251179,
+        "empirical_position_coverage": 0.9949664429530202,
+        "observations": 596
+      },
+      "safety": {
+        "minimum_auv_diver_clearance_m": 4.166157857441788,
+        "maximum_command_speed_m_s": 1.3,
+        "first_intruder_alert_s": 13.399999999999984,
+        "intruder_protected_zone_entry_s": 33.59999999999994,
+        "alert_lead_time_s": 20.199999999999953,
+        "alert_time_steps_by_severity": {
+          "info": 632,
+          "watch": 321,
+          "warning": 98,
+          "critical": 84
+        }
+      },
+      "fault_events": [],
+      "recovery_latency_s": null,
+      "inflight_first_delivery_after_disconnect_s": null,
+      "checks": [
+        {
+          "name": "finite_bounded_commands",
+          "status": "passed",
+          "measured": 1.3,
+          "criterion": "All command components finite; maximum commanded speed <= 1.3 m/s."
+        },
+        {
+          "name": "auv_separation",
+          "status": "passed",
+          "measured": 3.1543604329001593,
+          "criterion": "Minimum pairwise AUV centre separation >= 2.4 m."
+        },
+        {
+          "name": "wildlife_clearance",
+          "status": "passed",
+          "measured": 3.193844538716393,
+          "criterion": "Synthetic wildlife and AUV surfaces stay >= 0.8 m apart."
+        },
+        {
+          "name": "seabed_clearance",
+          "status": "passed",
+          "measured": 7.347734246934472,
+          "criterion": "Synthetic AUV surface stays >= 1 m above the analytic seabed."
+        },
+        {
+          "name": "diver_clearance",
+          "status": "passed",
+          "measured": 4.166157857441788,
+          "criterion": "Every AUV stays at least 2.4 m from the diver centre."
+        },
+        {
+          "name": "mapping_accuracy",
+          "status": "passed",
+          "measured": 0.03741318146334503,
+          "criterion": "Observed analytic-harness seabed elevation RMSE <= one map voxel."
+        },
+        {
+          "name": "sensor_position_accuracy",
+          "status": "passed",
+          "measured": 0.206851322609573,
+          "criterion": "Synthetic sonar detection position RMSE <= 1 m."
+        },
+        {
+          "name": "synthetic_classifier",
+          "status": "passed",
+          "measured": 1.0,
+          "criterion": "At least 10 synthetic detections and classification accuracy >= 0.75."
+        },
+        {
+          "name": "capacity_and_queues",
+          "status": "passed",
+          "measured": {
+            "bytes_including_headers": 41835,
+            "slot_budget_bytes": 72480.0,
+            "maximum_queue_depth": 1
+          },
+          "criterion": "Transmitted bytes including headers fit scheduled slot capacity; queues <= configured maximum."
+        },
+        {
+          "name": "delivery_ratio",
+          "status": "passed",
+          "measured": 0.3,
+          "criterion": "Deduplicated delivered / transmitted packets is within [0, 1]."
+        },
+        {
+          "name": "approach_alert_before_entry",
+          "status": "passed",
+          "measured": {
+            "first_alert_s": 13.399999999999984,
+            "protected_zone_entry_s": 33.59999999999994
+          },
+          "criterion": "A warning/critical alert associated geometrically with the approaching object precedes its 4 m zone entry."
+        }
+      ],
+      "time_series": [
+        {
+          "time_s": 0.2,
+          "packet_delivery_ratio": 0.0,
+          "formation_rmse_m": 0.025023370584998882,
+          "occupied_voxels": 67,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 0,
+            "auv_1": 0,
+            "auv_2": 0
+          }
+        },
+        {
+          "time_s": 1.0,
+          "packet_delivery_ratio": 0.0,
+          "formation_rmse_m": 0.2679815716291684,
+          "occupied_voxels": 122,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 0,
+            "auv_1": 0,
+            "auv_2": 0
+          }
+        },
+        {
+          "time_s": 2.0,
+          "packet_delivery_ratio": 0.0,
+          "formation_rmse_m": 0.5246875282552248,
+          "occupied_voxels": 168,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 0,
+            "auv_1": 0,
+            "auv_2": 0
+          }
+        },
+        {
+          "time_s": 3.0,
+          "packet_delivery_ratio": 0.14285714285714285,
+          "formation_rmse_m": 0.7137721651186387,
+          "occupied_voxels": 207,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 1,
+            "auv_1": 0,
+            "auv_2": 1
+          }
+        },
+        {
+          "time_s": 4.0,
+          "packet_delivery_ratio": 0.1,
+          "formation_rmse_m": 0.8424600005721284,
+          "occupied_voxels": 242,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 1,
+            "auv_1": 0,
+            "auv_2": 1
+          }
+        },
+        {
+          "time_s": 5.0,
+          "packet_delivery_ratio": 0.08333333333333333,
+          "formation_rmse_m": 0.9023903558255039,
+          "occupied_voxels": 296,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 1,
+            "auv_1": 0,
+            "auv_2": 1
+          }
+        },
+        {
+          "time_s": 6.0,
+          "packet_delivery_ratio": 0.13333333333333333,
+          "formation_rmse_m": 0.8787325882292936,
+          "occupied_voxels": 324,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 1,
+            "auv_1": 1,
+            "auv_2": 0
+          }
+        },
+        {
+          "time_s": 7.0,
+          "packet_delivery_ratio": 0.17647058823529413,
+          "formation_rmse_m": 0.849277089131691,
+          "occupied_voxels": 354,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 1,
+            "auv_1": 1,
+            "auv_2": 0
+          }
+        },
+        {
+          "time_s": 8.0,
+          "packet_delivery_ratio": 0.25,
+          "formation_rmse_m": 0.8126368813084524,
+          "occupied_voxels": 378,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 1,
+            "auv_2": 1
+          }
+        },
+        {
+          "time_s": 9.0,
+          "packet_delivery_ratio": 0.22727272727272727,
+          "formation_rmse_m": 0.8140975898132572,
+          "occupied_voxels": 410,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 1,
+            "auv_2": 1
+          }
+        },
+        {
+          "time_s": 10.0,
+          "packet_delivery_ratio": 0.2,
+          "formation_rmse_m": 0.849450172346323,
+          "occupied_voxels": 429,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 1,
+            "auv_2": 1
+          }
+        },
+        {
+          "time_s": 11.0,
+          "packet_delivery_ratio": 0.2222222222222222,
+          "formation_rmse_m": 0.8730382386323324,
+          "occupied_voxels": 447,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 1,
+            "auv_1": 0,
+            "auv_2": 1
+          }
+        },
+        {
+          "time_s": 12.0,
+          "packet_delivery_ratio": 0.2,
+          "formation_rmse_m": 0.8764341494826757,
+          "occupied_voxels": 464,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 1,
+            "auv_1": 0,
+            "auv_2": 1
+          }
+        },
+        {
+          "time_s": 13.0,
+          "packet_delivery_ratio": 0.1875,
+          "formation_rmse_m": 0.8540333543564917,
+          "occupied_voxels": 495,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 1,
+            "auv_1": 0,
+            "auv_2": 1
+          }
+        },
+        {
+          "time_s": 14.0,
+          "packet_delivery_ratio": 0.2,
+          "formation_rmse_m": 0.8371206830384982,
+          "occupied_voxels": 506,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 1,
+            "auv_1": 1,
+            "auv_2": 0
+          }
+        },
+        {
+          "time_s": 15.0,
+          "packet_delivery_ratio": 0.24324324324324326,
+          "formation_rmse_m": 0.8496697555012638,
+          "occupied_voxels": 510,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 16.0,
+          "packet_delivery_ratio": 0.25,
+          "formation_rmse_m": 0.8948713939131905,
+          "occupied_voxels": 521,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 17.0,
+          "packet_delivery_ratio": 0.2619047619047619,
+          "formation_rmse_m": 0.9490206214953497,
+          "occupied_voxels": 540,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 18.0,
+          "packet_delivery_ratio": 0.26666666666666666,
+          "formation_rmse_m": 0.9994395441312596,
+          "occupied_voxels": 549,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 1,
+            "auv_1": 2,
+            "auv_2": 1
+          }
+        },
+        {
+          "time_s": 19.0,
+          "packet_delivery_ratio": 0.2765957446808511,
+          "formation_rmse_m": 1.0468460463218685,
+          "occupied_voxels": 559,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 1,
+            "auv_1": 2,
+            "auv_2": 1
+          }
+        },
+        {
+          "time_s": 20.0,
+          "packet_delivery_ratio": 0.28,
+          "formation_rmse_m": 1.0810800590985432,
+          "occupied_voxels": 567,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 1,
+            "auv_1": 2,
+            "auv_2": 1
+          }
+        },
+        {
+          "time_s": 21.0,
+          "packet_delivery_ratio": 0.3076923076923077,
+          "formation_rmse_m": 1.1023505576889085,
+          "occupied_voxels": 586,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 22.0,
+          "packet_delivery_ratio": 0.2909090909090909,
+          "formation_rmse_m": 1.1187706714033534,
+          "occupied_voxels": 593,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 23.0,
+          "packet_delivery_ratio": 0.2982456140350877,
+          "formation_rmse_m": 1.1243911514794775,
+          "occupied_voxels": 601,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 24.0,
+          "packet_delivery_ratio": 0.3,
+          "formation_rmse_m": 1.1174722156360928,
+          "occupied_voxels": 615,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 1,
+            "auv_1": 2,
+            "auv_2": 1
+          }
+        },
+        {
+          "time_s": 25.0,
+          "packet_delivery_ratio": 0.3064516129032258,
+          "formation_rmse_m": 1.1942776607601873,
+          "occupied_voxels": 637,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 1,
+            "auv_1": 1,
+            "auv_2": 0
+          }
+        },
+        {
+          "time_s": 26.0,
+          "packet_delivery_ratio": 0.2923076923076923,
+          "formation_rmse_m": 1.24932721475537,
+          "occupied_voxels": 652,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 1,
+            "auv_1": 1,
+            "auv_2": 0
+          }
+        },
+        {
+          "time_s": 27.0,
+          "packet_delivery_ratio": 0.31343283582089554,
+          "formation_rmse_m": 1.2938947588499405,
+          "occupied_voxels": 657,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 1,
+            "auv_2": 1
+          }
+        },
+        {
+          "time_s": 28.0,
+          "packet_delivery_ratio": 0.3,
+          "formation_rmse_m": 1.3467896808146342,
+          "occupied_voxels": 668,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 1,
+            "auv_2": 1
+          }
+        },
+        {
+          "time_s": 29.0,
+          "packet_delivery_ratio": 0.2916666666666667,
+          "formation_rmse_m": 1.3812682057381314,
+          "occupied_voxels": 688,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 1,
+            "auv_2": 1
+          }
+        },
+        {
+          "time_s": 30.0,
+          "packet_delivery_ratio": 0.28,
+          "formation_rmse_m": 1.392167132933256,
+          "occupied_voxels": 696,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 0,
+            "auv_1": 0,
+            "auv_2": 0
+          }
+        },
+        {
+          "time_s": 31.0,
+          "packet_delivery_ratio": 0.2857142857142857,
+          "formation_rmse_m": 1.3856966532649901,
+          "occupied_voxels": 703,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 0,
+            "auv_1": 1,
+            "auv_2": 1
+          }
+        },
+        {
+          "time_s": 32.0,
+          "packet_delivery_ratio": 0.275,
+          "formation_rmse_m": 1.3872840870174472,
+          "occupied_voxels": 708,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 0,
+            "auv_1": 1,
+            "auv_2": 1
+          }
+        },
+        {
+          "time_s": 33.0,
+          "packet_delivery_ratio": 0.2804878048780488,
+          "formation_rmse_m": 1.416361995366274,
+          "occupied_voxels": 718,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 1,
+            "auv_1": 1,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 34.0,
+          "packet_delivery_ratio": 0.29411764705882354,
+          "formation_rmse_m": 1.4706489347073965,
+          "occupied_voxels": 724,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 35.0,
+          "packet_delivery_ratio": 0.28735632183908044,
+          "formation_rmse_m": 1.5187581237777696,
+          "occupied_voxels": 729,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 36.0,
+          "packet_delivery_ratio": 0.28888888888888886,
+          "formation_rmse_m": 1.5969300865621323,
+          "occupied_voxels": 740,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 1,
+            "auv_1": 2,
+            "auv_2": 1
+          }
+        },
+        {
+          "time_s": 37.0,
+          "packet_delivery_ratio": 0.2826086956521739,
+          "formation_rmse_m": 1.6915458076004264,
+          "occupied_voxels": 749,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 0,
+            "auv_1": 1,
+            "auv_2": 1
+          }
+        },
+        {
+          "time_s": 38.0,
+          "packet_delivery_ratio": 0.2736842105263158,
+          "formation_rmse_m": 1.7973764025327106,
+          "occupied_voxels": 752,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 0,
+            "auv_1": 0,
+            "auv_2": 0
+          }
+        },
+        {
+          "time_s": 39.0,
+          "packet_delivery_ratio": 0.28865979381443296,
+          "formation_rmse_m": 1.901025247035825,
+          "occupied_voxels": 757,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 1,
+            "auv_1": 2,
+            "auv_2": 1
+          }
+        },
+        {
+          "time_s": 40.0,
+          "packet_delivery_ratio": 0.29,
+          "formation_rmse_m": 1.9987904989721998,
+          "occupied_voxels": 761,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 41.0,
+          "packet_delivery_ratio": 0.28431372549019607,
+          "formation_rmse_m": 2.0723088849262843,
+          "occupied_voxels": 773,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 42.0,
+          "packet_delivery_ratio": 0.29523809523809524,
+          "formation_rmse_m": 2.106214053490073,
+          "occupied_voxels": 778,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 43.0,
+          "packet_delivery_ratio": 0.29906542056074764,
+          "formation_rmse_m": 2.119141251479166,
+          "occupied_voxels": 782,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 44.0,
+          "packet_delivery_ratio": 0.3090909090909091,
+          "formation_rmse_m": 2.123604036337614,
+          "occupied_voxels": 784,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 1,
+            "auv_2": 1
+          }
+        },
+        {
+          "time_s": 45.0,
+          "packet_delivery_ratio": 0.32142857142857145,
+          "formation_rmse_m": 2.1102903225853993,
+          "occupied_voxels": 796,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 1,
+            "auv_2": 1
+          }
+        },
+        {
+          "time_s": 46.0,
+          "packet_delivery_ratio": 0.3217391304347826,
+          "formation_rmse_m": 2.089485746939773,
+          "occupied_voxels": 800,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 1,
+            "auv_2": 1
+          }
+        },
+        {
+          "time_s": 47.0,
+          "packet_delivery_ratio": 0.3162393162393162,
+          "formation_rmse_m": 2.074768034823702,
+          "occupied_voxels": 812,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 1,
+            "auv_2": 1
+          }
+        },
+        {
+          "time_s": 48.0,
+          "packet_delivery_ratio": 0.30833333333333335,
+          "formation_rmse_m": 2.0691927494855644,
+          "occupied_voxels": 817,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 1,
+            "auv_1": 0,
+            "auv_2": 1
+          }
+        },
+        {
+          "time_s": 49.0,
+          "packet_delivery_ratio": 0.319672131147541,
+          "formation_rmse_m": 2.0689094435892197,
+          "occupied_voxels": 832,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 1,
+            "auv_2": 1
+          }
+        },
+        {
+          "time_s": 50.0,
+          "packet_delivery_ratio": 0.32,
+          "formation_rmse_m": 2.069277541964908,
+          "occupied_voxels": 840,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 1,
+            "auv_2": 1
+          }
+        },
+        {
+          "time_s": 51.0,
+          "packet_delivery_ratio": 0.31496062992125984,
+          "formation_rmse_m": 2.0677869550316577,
+          "occupied_voxels": 845,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 1,
+            "auv_1": 1,
+            "auv_2": 0
+          }
+        },
+        {
+          "time_s": 52.0,
+          "packet_delivery_ratio": 0.3076923076923077,
+          "formation_rmse_m": 2.068125683967196,
+          "occupied_voxels": 855,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 1,
+            "auv_1": 1,
+            "auv_2": 0
+          }
+        },
+        {
+          "time_s": 53.0,
+          "packet_delivery_ratio": 0.30303030303030304,
+          "formation_rmse_m": 2.0650386669598637,
+          "occupied_voxels": 861,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 0,
+            "auv_1": 0,
+            "auv_2": 0
+          }
+        },
+        {
+          "time_s": 54.0,
+          "packet_delivery_ratio": 0.3037037037037037,
+          "formation_rmse_m": 2.0571796003010463,
+          "occupied_voxels": 864,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 0,
+            "auv_1": 1,
+            "auv_2": 1
+          }
+        },
+        {
+          "time_s": 55.0,
+          "packet_delivery_ratio": 0.29927007299270075,
+          "formation_rmse_m": 2.044970743362405,
+          "occupied_voxels": 868,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 0,
+            "auv_1": 1,
+            "auv_2": 1
+          }
+        },
+        {
+          "time_s": 56.0,
+          "packet_delivery_ratio": 0.30714285714285716,
+          "formation_rmse_m": 2.0306406713741336,
+          "occupied_voxels": 873,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 1,
+            "auv_1": 1,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 57.0,
+          "packet_delivery_ratio": 0.30985915492957744,
+          "formation_rmse_m": 2.0171332117630274,
+          "occupied_voxels": 880,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 58.0,
+          "packet_delivery_ratio": 0.30344827586206896,
+          "formation_rmse_m": 2.003994984626147,
+          "occupied_voxels": 890,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 59.0,
+          "packet_delivery_ratio": 0.30612244897959184,
+          "formation_rmse_m": 1.9912559721009175,
+          "occupied_voxels": 897,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 1,
+            "auv_1": 1,
+            "auv_2": 0
+          }
+        },
+        {
+          "time_s": 60.0,
+          "packet_delivery_ratio": 0.3,
+          "formation_rmse_m": 1.9774826228636102,
+          "occupied_voxels": 899,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 1,
+            "auv_1": 1,
+            "auv_2": 0
+          }
+        }
+      ]
+    },
+    "outage_recovery": {
+      "name": "outage_recovery",
+      "duration_s": 60.0,
+      "seed": 7,
+      "integration_step_s": 0.2,
+      "configured_packet_loss": 0.12,
+      "all_applicable_checks_passed": true,
+      "metrics": {
+        "mapping_rmse_m": 0.03534412272735251,
+        "coverage_fraction": 0.23555555555555555,
+        "elevation_samples": 848,
+        "elapsed_s": 60.0,
+        "seed": 7,
+        "localization_rmse_m": 0.02747845210472315,
+        "sonar_position_rmse_m": 0.20665628478834394,
+        "tracking_rmse_m": 0.7550719911953009,
+        "classification_accuracy": 1.0,
+        "matched_track_classification_accuracy": 1.0,
+        "sensor_observations": 599,
+        "unknown_observations": 163,
+        "mission_mode": "protect",
+        "formation_rmse_m": 2.067302525207369,
+        "mission_target_rmse_m": 2.067302525207369,
+        "exploration_coverage_pct": 47.66,
+        "minimum_auv_separation_m": 6.2024405424067055,
+        "minimum_wildlife_clearance_m": 2.341702243172213,
+        "minimum_seabed_clearance_m": 7.458851239764151,
+        "packet_delivery_ratio": 0.8923076923076924,
+        "classifier": "synthetic feature/template baseline; no trained AI",
+        "motion_authority": "offline numerical harness"
+      },
+      "network": {
+        "enqueued": 150,
+        "transmitted": 130,
+        "delivered": 116,
+        "lost": 12,
+        "expired": 16,
+        "expired_inflight": 0,
+        "queue_overflow": 0,
+        "oversize_rejected": 0,
+        "raw_audio_rejected": 0,
+        "outages": 1,
+        "reconnections": 1,
+        "superseded_on_reconnect": 3,
+        "duplicate_injected": 0,
+        "duplicate_discarded": 0,
+        "bytes_transmitted": 32656,
+        "protocol": "acoustic_tdma",
+        "bitrate_bps": 9600,
+        "slot_duration_s": 0.4,
+        "max_packet_bytes": 456,
+        "loss_probability": 0.12,
+        "loss_rate": 0.09230769230769231,
+        "queued": 1,
+        "delivery_ratio": 0.8923076923076924,
+        "mean_latency_s": 1.5357965331876162,
+        "queue_depth": {
+          "auv_0": 0,
+          "auv_1": 1,
+          "auv_2": 0
+        },
+        "connected": {
+          "auv_0": true,
+          "auv_1": true,
+          "auv_2": true
+        },
+        "last_delivery": {
+          "auv_0": 59.56572858746569,
+          "auv_1": 59.87430278503241,
+          "auv_2": 58.839590260142494
+        }
+      },
+      "classification": {
+        "labels": [
+          "unknown",
+          "diver",
+          "marine_life",
+          "vehicle",
+          "obstacle"
+        ],
+        "confusion_matrix": {
+          "unknown": {
+            "unknown": 163,
+            "diver": 0,
+            "marine_life": 0,
+            "vehicle": 0,
+            "obstacle": 0
+          },
+          "diver": {
+            "unknown": 0,
+            "diver": 0,
+            "marine_life": 0,
+            "vehicle": 0,
+            "obstacle": 0
+          },
+          "marine_life": {
+            "unknown": 0,
+            "diver": 0,
+            "marine_life": 217,
+            "vehicle": 0,
+            "obstacle": 0
+          },
+          "vehicle": {
+            "unknown": 0,
+            "diver": 0,
+            "marine_life": 0,
+            "vehicle": 87,
+            "obstacle": 0
+          },
+          "obstacle": {
+            "unknown": 0,
+            "diver": 0,
+            "marine_life": 0,
+            "vehicle": 0,
+            "obstacle": 132
+          }
+        },
+        "precision_by_class": {
+          "unknown": 1.0,
+          "diver": null,
+          "marine_life": 1.0,
+          "vehicle": 1.0,
+          "obstacle": 1.0
+        },
+        "recall_by_class": {
+          "unknown": 1.0,
+          "diver": null,
+          "marine_life": 1.0,
+          "vehicle": 1.0,
+          "obstacle": 1.0
+        },
+        "micro_precision": 1.0,
+        "observations": 599,
+        "scope": "Synthetic acoustic templates and class-tag silhouette cues; untrained baseline."
+      },
+      "tracking_at_end": {
+        "association": "Greedy one-to-one position association within 4 m; truth IDs unused by tracker.",
+        "tracks": 4,
+        "truth_objects": 6,
+        "matched_tracks": 4,
+        "unmatched_tracks": 0,
+        "unmatched_objects": 2,
+        "duplicate_candidates": 0,
+        "position_rmse_m": 0.7550719911953009,
+        "precision": 1.0,
+        "recall": 0.6666666666666666
+      },
+      "uncertainty": {
+        "nominal_position_ellipsoid_probability": 0.95,
+        "mahalanobis_squared_threshold": 7.814727903251179,
+        "empirical_position_coverage": 0.993322203672788,
+        "observations": 599
+      },
+      "safety": {
+        "minimum_auv_diver_clearance_m": 4.21528080841636,
+        "maximum_command_speed_m_s": 1.3,
+        "first_intruder_alert_s": 13.399999999999984,
+        "intruder_protected_zone_entry_s": 33.59999999999994,
+        "alert_lead_time_s": 20.199999999999953,
+        "alert_time_steps_by_severity": {
+          "info": 556,
+          "watch": 377,
+          "warning": 96,
+          "critical": 91
+        }
+      },
+      "fault_events": [
+        {
+          "time_s": 18.0,
+          "node": "auv_1",
+          "event": "acoustic_link_disconnected"
+        },
+        {
+          "time_s": 42.0,
+          "node": "auv_1",
+          "event": "acoustic_link_reconnected"
+        },
+        {
+          "time_s": 43.388937,
+          "node": "auv_1",
+          "event": "first_post_reconnection_delivery"
+        }
+      ],
+      "recovery_latency_s": 1.3889370769608789,
+      "inflight_first_delivery_after_disconnect_s": 43.38893707696088,
+      "checks": [
+        {
+          "name": "finite_bounded_commands",
+          "status": "passed",
+          "measured": 1.3,
+          "criterion": "All command components finite; maximum commanded speed <= 1.3 m/s."
+        },
+        {
+          "name": "auv_separation",
+          "status": "passed",
+          "measured": 6.2024405424067055,
+          "criterion": "Minimum pairwise AUV centre separation >= 2.4 m."
+        },
+        {
+          "name": "wildlife_clearance",
+          "status": "passed",
+          "measured": 2.341702243172213,
+          "criterion": "Synthetic wildlife and AUV surfaces stay >= 0.8 m apart."
+        },
+        {
+          "name": "seabed_clearance",
+          "status": "passed",
+          "measured": 7.458851239764151,
+          "criterion": "Synthetic AUV surface stays >= 1 m above the analytic seabed."
+        },
+        {
+          "name": "diver_clearance",
+          "status": "passed",
+          "measured": 4.21528080841636,
+          "criterion": "Every AUV stays at least 2.4 m from the diver centre."
+        },
+        {
+          "name": "mapping_accuracy",
+          "status": "passed",
+          "measured": 0.03534412272735251,
+          "criterion": "Observed analytic-harness seabed elevation RMSE <= one map voxel."
+        },
+        {
+          "name": "sensor_position_accuracy",
+          "status": "passed",
+          "measured": 0.20665628478834394,
+          "criterion": "Synthetic sonar detection position RMSE <= 1 m."
+        },
+        {
+          "name": "synthetic_classifier",
+          "status": "passed",
+          "measured": 1.0,
+          "criterion": "At least 10 synthetic detections and classification accuracy >= 0.75."
+        },
+        {
+          "name": "capacity_and_queues",
+          "status": "passed",
+          "measured": {
+            "bytes_including_headers": 35776,
+            "slot_budget_bytes": 72480.0,
+            "maximum_queue_depth": 5
+          },
+          "criterion": "Transmitted bytes including headers fit scheduled slot capacity; queues <= configured maximum."
+        },
+        {
+          "name": "delivery_ratio",
+          "status": "passed",
+          "measured": 0.8923076923076924,
+          "criterion": "Deduplicated delivered / transmitted packets is within [0, 1]."
+        },
+        {
+          "name": "approach_alert_before_entry",
+          "status": "passed",
+          "measured": {
+            "first_alert_s": 13.399999999999984,
+            "protected_zone_entry_s": 33.59999999999994
+          },
+          "criterion": "A warning/critical alert associated geometrically with the approaching object precedes its 4 m zone entry."
+        },
+        {
+          "name": "outage_recovery",
+          "status": "passed",
+          "measured": {
+            "outages": 1,
+            "reconnections": 1,
+            "first_delivery_delay_s": 1.3889370769608789
+          },
+          "criterion": "One forced acoustic link outage, one reconnection, and a fresh post-reconnection delivery before run end."
+        },
+        {
+          "name": "stale_peer_expiry",
+          "status": "passed",
+          "measured": true,
+          "criterion": "Other nodes remove auv_1 telemetry after its 4 s freshness limit; evaluated only for outage windows > 4.4 s."
+        }
+      ],
+      "time_series": [
+        {
+          "time_s": 0.2,
+          "packet_delivery_ratio": 0.0,
+          "formation_rmse_m": 0.025023370584998882,
+          "occupied_voxels": 67,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 0,
+            "auv_1": 0,
+            "auv_2": 0
+          }
+        },
+        {
+          "time_s": 1.0,
+          "packet_delivery_ratio": 0.5,
+          "formation_rmse_m": 0.27178519411190544,
+          "occupied_voxels": 122,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 1,
+            "auv_1": 0,
+            "auv_2": 1
+          }
+        },
+        {
+          "time_s": 2.0,
+          "packet_delivery_ratio": 0.6,
+          "formation_rmse_m": 0.5862678625186759,
+          "occupied_voxels": 165,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 3.0,
+          "packet_delivery_ratio": 0.7142857142857143,
+          "formation_rmse_m": 0.8461772920474175,
+          "occupied_voxels": 204,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 4.0,
+          "packet_delivery_ratio": 0.7,
+          "formation_rmse_m": 1.0313571356067377,
+          "occupied_voxels": 235,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 5.0,
+          "packet_delivery_ratio": 0.8333333333333334,
+          "formation_rmse_m": 1.1073124475987768,
+          "occupied_voxels": 295,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 6.0,
+          "packet_delivery_ratio": 0.8666666666666667,
+          "formation_rmse_m": 1.0906966235704518,
+          "occupied_voxels": 326,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 7.0,
+          "packet_delivery_ratio": 0.8823529411764706,
+          "formation_rmse_m": 1.0567352850394143,
+          "occupied_voxels": 357,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 8.0,
+          "packet_delivery_ratio": 0.8,
+          "formation_rmse_m": 1.0638266455556926,
+          "occupied_voxels": 384,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 1,
+            "auv_2": 1
+          }
+        },
+        {
+          "time_s": 9.0,
+          "packet_delivery_ratio": 0.8636363636363636,
+          "formation_rmse_m": 1.138412870479839,
+          "occupied_voxels": 407,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 10.0,
+          "packet_delivery_ratio": 0.8,
+          "formation_rmse_m": 1.2205900792754243,
+          "occupied_voxels": 422,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 11.0,
+          "packet_delivery_ratio": 0.8518518518518519,
+          "formation_rmse_m": 1.285870553302638,
+          "occupied_voxels": 440,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 12.0,
+          "packet_delivery_ratio": 0.8333333333333334,
+          "formation_rmse_m": 1.2938847174217414,
+          "occupied_voxels": 457,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 13.0,
+          "packet_delivery_ratio": 0.84375,
+          "formation_rmse_m": 1.2725282514375835,
+          "occupied_voxels": 485,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 14.0,
+          "packet_delivery_ratio": 0.8571428571428571,
+          "formation_rmse_m": 1.2512009902172263,
+          "occupied_voxels": 502,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 15.0,
+          "packet_delivery_ratio": 0.8918918918918919,
+          "formation_rmse_m": 1.2362083402651005,
+          "occupied_voxels": 512,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 16.0,
+          "packet_delivery_ratio": 0.875,
+          "formation_rmse_m": 1.2180192841749242,
+          "occupied_voxels": 527,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 17.0,
+          "packet_delivery_ratio": 0.8571428571428571,
+          "formation_rmse_m": 1.191409753527855,
+          "occupied_voxels": 548,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 18.0,
+          "packet_delivery_ratio": 0.8666666666666667,
+          "formation_rmse_m": 1.1744663774341193,
+          "occupied_voxels": 559,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 19.0,
+          "packet_delivery_ratio": 0.8913043478260869,
+          "formation_rmse_m": 1.1702755160449996,
+          "occupied_voxels": 573,
+          "auv_1_connected": false,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 20.0,
+          "packet_delivery_ratio": 0.8958333333333334,
+          "formation_rmse_m": 1.1744797114506071,
+          "occupied_voxels": 582,
+          "auv_1_connected": false,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 21.0,
+          "packet_delivery_ratio": 0.8979591836734694,
+          "formation_rmse_m": 1.18173208556571,
+          "occupied_voxels": 597,
+          "auv_1_connected": false,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 22.0,
+          "packet_delivery_ratio": 0.9019607843137255,
+          "formation_rmse_m": 1.1877993824595021,
+          "occupied_voxels": 604,
+          "auv_1_connected": false,
+          "peer_counts": {
+            "auv_0": 1,
+            "auv_1": 2,
+            "auv_2": 1
+          }
+        },
+        {
+          "time_s": 23.0,
+          "packet_delivery_ratio": 0.8867924528301887,
+          "formation_rmse_m": 1.1911637613137558,
+          "occupied_voxels": 616,
+          "auv_1_connected": false,
+          "peer_counts": {
+            "auv_0": 1,
+            "auv_1": 2,
+            "auv_2": 1
+          }
+        },
+        {
+          "time_s": 24.0,
+          "packet_delivery_ratio": 0.8909090909090909,
+          "formation_rmse_m": 1.1807363211974995,
+          "occupied_voxels": 624,
+          "auv_1_connected": false,
+          "peer_counts": {
+            "auv_0": 1,
+            "auv_1": 2,
+            "auv_2": 1
+          }
+        },
+        {
+          "time_s": 25.0,
+          "packet_delivery_ratio": 0.9107142857142857,
+          "formation_rmse_m": 1.2354870767795707,
+          "occupied_voxels": 647,
+          "auv_1_connected": false,
+          "peer_counts": {
+            "auv_0": 1,
+            "auv_1": 2,
+            "auv_2": 1
+          }
+        },
+        {
+          "time_s": 26.0,
+          "packet_delivery_ratio": 0.896551724137931,
+          "formation_rmse_m": 1.2695481260231694,
+          "occupied_voxels": 659,
+          "auv_1_connected": false,
+          "peer_counts": {
+            "auv_0": 1,
+            "auv_1": 2,
+            "auv_2": 1
+          }
+        },
+        {
+          "time_s": 27.0,
+          "packet_delivery_ratio": 0.8983050847457628,
+          "formation_rmse_m": 1.2917798360106414,
+          "occupied_voxels": 662,
+          "auv_1_connected": false,
+          "peer_counts": {
+            "auv_0": 1,
+            "auv_1": 2,
+            "auv_2": 1
+          }
+        },
+        {
+          "time_s": 28.0,
+          "packet_delivery_ratio": 0.9016393442622951,
+          "formation_rmse_m": 1.3202033191857112,
+          "occupied_voxels": 668,
+          "auv_1_connected": false,
+          "peer_counts": {
+            "auv_0": 1,
+            "auv_1": 2,
+            "auv_2": 1
+          }
+        },
+        {
+          "time_s": 29.0,
+          "packet_delivery_ratio": 0.8888888888888888,
+          "formation_rmse_m": 1.3339839375919738,
+          "occupied_voxels": 686,
+          "auv_1_connected": false,
+          "peer_counts": {
+            "auv_0": 1,
+            "auv_1": 2,
+            "auv_2": 1
+          }
+        },
+        {
+          "time_s": 30.0,
+          "packet_delivery_ratio": 0.8769230769230769,
+          "formation_rmse_m": 1.3391172716071165,
+          "occupied_voxels": 688,
+          "auv_1_connected": false,
+          "peer_counts": {
+            "auv_0": 1,
+            "auv_1": 2,
+            "auv_2": 1
+          }
+        },
+        {
+          "time_s": 31.0,
+          "packet_delivery_ratio": 0.8939393939393939,
+          "formation_rmse_m": 1.3430163903082442,
+          "occupied_voxels": 699,
+          "auv_1_connected": false,
+          "peer_counts": {
+            "auv_0": 1,
+            "auv_1": 2,
+            "auv_2": 1
+          }
+        },
+        {
+          "time_s": 32.0,
+          "packet_delivery_ratio": 0.8970588235294118,
+          "formation_rmse_m": 1.3562415210390513,
+          "occupied_voxels": 710,
+          "auv_1_connected": false,
+          "peer_counts": {
+            "auv_0": 1,
+            "auv_1": 2,
+            "auv_2": 1
+          }
+        },
+        {
+          "time_s": 33.0,
+          "packet_delivery_ratio": 0.8840579710144928,
+          "formation_rmse_m": 1.383412104500259,
+          "occupied_voxels": 731,
+          "auv_1_connected": false,
+          "peer_counts": {
+            "auv_0": 1,
+            "auv_1": 2,
+            "auv_2": 1
+          }
+        },
+        {
+          "time_s": 34.0,
+          "packet_delivery_ratio": 0.8732394366197183,
+          "formation_rmse_m": 1.4188490342541675,
+          "occupied_voxels": 739,
+          "auv_1_connected": false,
+          "peer_counts": {
+            "auv_0": 1,
+            "auv_1": 2,
+            "auv_2": 1
+          }
+        },
+        {
+          "time_s": 35.0,
+          "packet_delivery_ratio": 0.8767123287671232,
+          "formation_rmse_m": 1.4673206941739863,
+          "occupied_voxels": 747,
+          "auv_1_connected": false,
+          "peer_counts": {
+            "auv_0": 1,
+            "auv_1": 2,
+            "auv_2": 1
+          }
+        },
+        {
+          "time_s": 36.0,
+          "packet_delivery_ratio": 0.88,
+          "formation_rmse_m": 1.5430977429443966,
+          "occupied_voxels": 751,
+          "auv_1_connected": false,
+          "peer_counts": {
+            "auv_0": 1,
+            "auv_1": 2,
+            "auv_2": 1
+          }
+        },
+        {
+          "time_s": 37.0,
+          "packet_delivery_ratio": 0.8947368421052632,
+          "formation_rmse_m": 1.6614939483559157,
+          "occupied_voxels": 760,
+          "auv_1_connected": false,
+          "peer_counts": {
+            "auv_0": 1,
+            "auv_1": 2,
+            "auv_2": 1
+          }
+        },
+        {
+          "time_s": 38.0,
+          "packet_delivery_ratio": 0.8974358974358975,
+          "formation_rmse_m": 1.791802646747958,
+          "occupied_voxels": 764,
+          "auv_1_connected": false,
+          "peer_counts": {
+            "auv_0": 1,
+            "auv_1": 2,
+            "auv_2": 1
+          }
+        },
+        {
+          "time_s": 39.0,
+          "packet_delivery_ratio": 0.8987341772151899,
+          "formation_rmse_m": 1.923556407759742,
+          "occupied_voxels": 770,
+          "auv_1_connected": false,
+          "peer_counts": {
+            "auv_0": 1,
+            "auv_1": 2,
+            "auv_2": 1
+          }
+        },
+        {
+          "time_s": 40.0,
+          "packet_delivery_ratio": 0.8888888888888888,
+          "formation_rmse_m": 2.046574682806822,
+          "occupied_voxels": 781,
+          "auv_1_connected": false,
+          "peer_counts": {
+            "auv_0": 1,
+            "auv_1": 2,
+            "auv_2": 1
+          }
+        },
+        {
+          "time_s": 41.0,
+          "packet_delivery_ratio": 0.8795180722891566,
+          "formation_rmse_m": 2.1272391023449404,
+          "occupied_voxels": 789,
+          "auv_1_connected": false,
+          "peer_counts": {
+            "auv_0": 1,
+            "auv_1": 2,
+            "auv_2": 1
+          }
+        },
+        {
+          "time_s": 42.0,
+          "packet_delivery_ratio": 0.8705882352941177,
+          "formation_rmse_m": 2.166200743222494,
+          "occupied_voxels": 794,
+          "auv_1_connected": false,
+          "peer_counts": {
+            "auv_0": 1,
+            "auv_1": 2,
+            "auv_2": 1
+          }
+        },
+        {
+          "time_s": 43.0,
+          "packet_delivery_ratio": 0.8735632183908046,
+          "formation_rmse_m": 2.180459596526919,
+          "occupied_voxels": 799,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 1,
+            "auv_1": 2,
+            "auv_2": 1
+          }
+        },
+        {
+          "time_s": 44.0,
+          "packet_delivery_ratio": 0.8666666666666667,
+          "formation_rmse_m": 2.1689089609126637,
+          "occupied_voxels": 803,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 45.0,
+          "packet_delivery_ratio": 0.8804347826086957,
+          "formation_rmse_m": 2.147703154150044,
+          "occupied_voxels": 813,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 46.0,
+          "packet_delivery_ratio": 0.8631578947368421,
+          "formation_rmse_m": 2.128930686283361,
+          "occupied_voxels": 819,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 47.0,
+          "packet_delivery_ratio": 0.8762886597938144,
+          "formation_rmse_m": 2.1162963671797175,
+          "occupied_voxels": 823,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 48.0,
+          "packet_delivery_ratio": 0.87,
+          "formation_rmse_m": 2.110569347154717,
+          "occupied_voxels": 835,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 49.0,
+          "packet_delivery_ratio": 0.8921568627450981,
+          "formation_rmse_m": 2.108876071035596,
+          "occupied_voxels": 847,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 50.0,
+          "packet_delivery_ratio": 0.8857142857142857,
+          "formation_rmse_m": 2.110280938543952,
+          "occupied_voxels": 850,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 51.0,
+          "packet_delivery_ratio": 0.8878504672897196,
+          "formation_rmse_m": 2.1140900021226843,
+          "occupied_voxels": 855,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 52.0,
+          "packet_delivery_ratio": 0.8818181818181818,
+          "formation_rmse_m": 2.1191900541016024,
+          "occupied_voxels": 858,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 53.0,
+          "packet_delivery_ratio": 0.9017857142857143,
+          "formation_rmse_m": 2.126241712043903,
+          "occupied_voxels": 869,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 54.0,
+          "packet_delivery_ratio": 0.8869565217391304,
+          "formation_rmse_m": 2.133748462732709,
+          "occupied_voxels": 872,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 55.0,
+          "packet_delivery_ratio": 0.8974358974358975,
+          "formation_rmse_m": 2.1318854452753935,
+          "occupied_voxels": 879,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 56.0,
+          "packet_delivery_ratio": 0.8833333333333333,
+          "formation_rmse_m": 2.125354291474522,
+          "occupied_voxels": 883,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 57.0,
+          "packet_delivery_ratio": 0.9016393442622951,
+          "formation_rmse_m": 2.114126112573397,
+          "occupied_voxels": 888,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 58.0,
+          "packet_delivery_ratio": 0.896,
+          "formation_rmse_m": 2.0993891356381114,
+          "occupied_voxels": 892,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 59.0,
+          "packet_delivery_ratio": 0.8976377952755905,
+          "formation_rmse_m": 2.0831825821926255,
+          "occupied_voxels": 897,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        },
+        {
+          "time_s": 60.0,
+          "packet_delivery_ratio": 0.8923076923076924,
+          "formation_rmse_m": 2.067302525207369,
+          "occupied_voxels": 904,
+          "auv_1_connected": true,
+          "peer_counts": {
+            "auv_0": 2,
+            "auv_1": 2,
+            "auv_2": 2
+          }
+        }
+      ]
+    }
+  },
+  "comparisons": {
+    "packet_delivery_ratio_drop": 0.5933333333333333,
+    "formation_rmse_change_m": -0.0994206719516515,
+    "outage_recovery_latency_s": 1.3889370769608789,
+    "checks": [
+      {
+        "name": "loss_stress_changes_delivery",
+        "status": "passed",
+        "measured": {
+          "nominal": 0.8933333333333333,
+          "high_loss": 0.3
+        },
+        "criterion": "High-loss observed packet delivery ratio is lower for runs with at least 20 transmitted packets per scenario."
+      }
+    ]
+  }
+}

@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#171e24">
+  <title>TIDEWATCH / Operations Console</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="stylesheet" href="/style.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="TIDEWATCH operations console"><span class="brand-mark">◈</span><span>TIDEWATCH<small>UNDERWATER SYSTEM</small></span></a>
+    <div class="mission-title"><span class="subtle">OPERATIONS CONSOLE</span><span id="mission-title">Dual mission swarm · Simulation</span></div>
+    <div class="header-status"><span id="connection" class="badge waiting"><i></i>WAITING FOR TELEMETRY</span><span class="sim-tag">SIMULATION</span><span id="clock" class="mono">00:00:00</span></div>
+  </header>
+  <main>
+    <section class="overview">
+      <div><div class="eyebrow"><span class="live-dot"></span> AUTONOMOUS UNDERWATER SYSTEM</div><h1>Operations console</h1><p id="mission-description">Diver protection and autonomous survey. All positions are in local ENU meters.</p></div>
+      <div class="controls"><button id="start" class="primary" data-command="start">▶ <span>Start mission</span></button><button id="pause" data-command="pause">Ⅱ <span>Pause</span></button><button id="reset" data-command="reset" title="Reset the simulation mission">↺ <span>Reset</span></button></div>
+    </section>
+    <section class="mission-selector panel" aria-labelledby="mission-selector-title">
+      <div class="mission-selector-heading">
+        <span class="eyebrow">MISSION MODE</span>
+        <h2 id="mission-selector-title">
+          Mission assignment
+        </h2>
+        <p id="mode-status" role="status" aria-live="polite">
+          Waiting for live mission telemetry
+        </p>
+      </div>
+      <div class="mission-options" role="group" aria-label="Mission mode">
+        <button type="button" class="mission-option" id="mode-protect" data-mission="protect" aria-pressed="false" disabled>
+          <span class="mission-glyph" aria-hidden="true">◇</span><span class="mission-option-copy"><strong>Diver protection <small id="protect-mode-state">STANDBY</small></strong><span>Adaptive escort / contact monitoring</span></span><span class="mission-option-arrow" aria-hidden="true">↗</span>
+        </button>
+        <button type="button" class="mission-option" id="mode-explore" data-mission="explore" aria-pressed="false" disabled>
+          <span class="mission-glyph" aria-hidden="true">⌁</span><span class="mission-option-copy"><strong>Autonomous survey <small id="explore-mode-state">STANDBY</small></strong><span>Frontier allocation / measured mapping</span></span><span class="mission-option-arrow" aria-hidden="true">↗</span>
+        </button>
+      </div>
+    </section>
+    <section class="panel diver-control" aria-labelledby="diver-control-title">
+      <div class="pilot-heading">
+        <span class="eyebrow">DIVER CONTROL</span>
+        <h2 id="diver-control-title">
+          Diver movement
+        </h2>
+        <p id="pilot-status" role="status" aria-live="polite">
+          Waiting for controller telemetry
+        </p>
+        <span id="pilot-position" class="mono">ENU —</span>
+      </div>
+      <div class="pilot-controls">
+        <div class="pilot-mode" role="group" aria-label="Diver movement mode">
+          <button type="button" id="pilot-scripted" data-pilot-mode="scripted" aria-pressed="false" disabled>
+            Scripted route
+          </button>
+          <button type="button" id="pilot-manual" data-pilot-mode="manual" aria-pressed="false" disabled>
+            Manual control
+          </button>
+        </div>
+        <p class="pilot-help" id="pilot-help">
+          Hold W/A/S/D or arrow keys · Q descend / E ascend · Space stop
+        </p>
+        <small id="pilot-limit">Maximum speed 0.65 m/s · Release to stop · Controller deadman enabled</small>
+      </div>
+      <div class="pilot-pad" role="group" aria-label="Hold pointer or Enter to move diver">
+        <button type="button" data-pilot-vector="0,1,0" class="pilot-north" aria-label="Hold pointer or Enter to move north" disabled>
+          ↑ <small>N</small>
+        </button>
+        <button type="button" data-pilot-vector="-1,0,0" class="pilot-west" aria-label="Hold pointer or Enter to move west" disabled>
+          ← <small>W</small>
+        </button>
+        <button type="button" id="pilot-stop" class="pilot-stop" aria-label="Stop diver" disabled>
+          STOP
+        </button>
+        <button type="button" data-pilot-vector="1,0,0" class="pilot-east" aria-label="Hold pointer or Enter to move east" disabled>
+          → <small>E</small>
+        </button>
+        <button type="button" data-pilot-vector="0,-1,0" class="pilot-south" aria-label="Hold pointer or Enter to move south" disabled>
+          ↓ <small>S</small>
+        </button>
+        <button type="button" data-pilot-vector="0,0,-1" class="pilot-down" aria-label="Hold pointer or Enter to descend" disabled>
+          ↓ DEPTH
+        </button>
+        <button type="button" data-pilot-vector="0,0,1" class="pilot-up" aria-label="Hold pointer or Enter to ascend" disabled>
+          ↑ DEPTH
+        </button>
+      </div>
+    </section>
+    <section class="mission-strategy panel" aria-labelledby="strategy-title">
+      <div class="strategy-intro">
+        <span class="eyebrow">PLANNER STATUS</span>
+        <h2 id="strategy-title">
+          Waiting for the mission planner
+        </h2>
+        <p id="strategy-description">
+          Live goals, responsibilities, and observations appear when the controller connects.
+        </p>
+      </div>
+      <div class="strategy-stat">
+        <span class="eyebrow" id="strategy-phase-label">MISSION PHASE</span><strong id="strategy-phase">—</strong><small id="strategy-phase-detail">Awaiting planner telemetry</small>
+      </div>
+      <div class="strategy-stat">
+        <span class="eyebrow" id="strategy-goals-label">ASSIGNED GOALS</span><strong id="strategy-goals">—</strong><small id="strategy-goals-detail">Navigation targets from each node</small>
+      </div>
+      <div class="strategy-stat">
+        <span class="eyebrow">SENSING POLICY</span><strong>Measured returns only</strong><small id="strategy-policy">Only measured returns enter the map</small>
+      </div>
+    </section>
+    <section class="workspace">
+      <div class="scene-panel panel">
+        <div class="panel-heading"><div><span class="eyebrow">TACTICAL VIEW</span><h2>Mission area</h2></div><div class="view-tools"><button id="center" title="Recenter camera on the mission">◎ Center</button><button id="topview" title="Switch top and perspective view" aria-pressed="false">⌗ Top view</button></div></div>
+        <div class="scene-wrap"><canvas id="scene" tabindex="0" aria-label="Interactive operational scene. Drag or use arrow keys to orbit. Scroll or press plus and minus to zoom. Press Home to center."></canvas><div class="scene-label"><span class="live-dot"></span><span id="scene-status">Awaiting swarm connection</span><small>LOCAL ENU · METERS</small></div><div id="scene-mission" class="scene-mission">AWAITING DIRECTIVE</div><div class="scene-coordinate mono" id="coordinates">MISSION POSITION —</div><div class="scene-help">DRAG TO ORBIT <span>·</span> SCROLL TO ZOOM</div><div class="scene-scale"><span></span><small id="scale-label">10 m</small></div><div id="empty-scene" class="empty-scene"><span>◈</span><strong>No telemetry received</strong><p>Start the TIDEWATCH simulation to stream the swarm and sensor observations.</p></div></div>
+        <div class="scene-legend"><span><i class="legend-mark auv"></i>AUV node</span><span id="diver-legend"><i class="legend-mark diver"></i>Protected diver</span><span><i class="legend-mark hazard"></i>Hazard / review</span><span><i class="legend-mark coverage"></i>Measured map</span><span><i class="legend-goal"></i>Assigned goal</span><span class="legend-note">Halos: uncertainty · Grid: reference</span></div>
+      </div>
+      <aside class="side-panels">
+        <section class="panel protection"><div class="panel-heading"><div><span class="eyebrow" id="protection-eyebrow">MISSION STATUS</span><h2 id="protection-title">Mission readiness</h2></div><span id="protection-icon" class="shield" aria-hidden="true">◇</span></div><div class="protection-status"><span id="protection-status">Awaiting mission</span><span id="protection-detail">No live mission data</span></div><div class="protection-meter" role="meter" id="mission-meter" aria-label="Connected nodes" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="protection-fill"></span></div><div class="meter-caption" id="meter-caption">Connected fleet</div><div class="protection-stats"><div><span id="formation">—</span><small id="formation-label">FORMATION ERROR</small></div><div><span id="nearest">—</span><small id="nearest-label">NEAREST TRACK</small></div><div><span id="zone">—</span><small id="zone-label">PROTECTED RADIUS</small></div></div></section>
+        <section class="panel fleet"><div class="panel-heading"><div><span class="eyebrow">UNIT STATUS</span><h2>Fleet / assigned roles</h2></div><span id="fleet-count" class="count-pill">0 / 0</span></div><div id="fleet-list" class="fleet-list"><div class="empty-small">Nodes will appear when telemetry arrives.</div></div><div class="fleet-bottom"><span class="subtle">Live planner</span><span class="mono" id="fleet-planner">AWAITING TELEMETRY</span></div></section>
+        <section class="panel network"><div class="panel-heading"><div><span class="eyebrow">LINK STATUS</span><h2>Acoustic network</h2></div><span id="network-status" class="tiny-badge">TDMA</span></div><div class="network-data"><div><strong id="packet-loss">—</strong><span>PACKET LOSS</span></div><div><strong id="packet-delivered">—</strong><span>DELIVERED</span></div><div><strong id="queued">—</strong><span>QUEUED</span></div></div><canvas id="network-chart" class="chart" aria-label="Packet loss history"></canvas><button id="outage" class="outage-button" data-command="toggle_outage"><span>⌁</span> Inject communication outage</button></section>
+      </aside>
+    </section>
+    <section class="panel ocean-current" aria-labelledby="current-title">
+      <div class="current-heading"><span class="eyebrow">OCEAN DISTURBANCE</span><h2 id="current-title">Water current</h2><div class="current-live"><strong id="current-speed">—</strong><span id="current-vector" class="mono">Awaiting current telemetry</span></div></div>
+      <div class="current-controls"><div class="current-presets" aria-label="Current presets"><button data-current="0,0,0" type="button" aria-pressed="false">Calm water</button><button data-current="0.25,-0.15,0" type="button" aria-pressed="false">Cross-current</button><button data-current="0.45,0.2,0" type="button" aria-pressed="false">Strong current</button></div><form id="current-form"><div class="current-inputs"><label for="current-east">EAST<input id="current-east" name="east" type="number" min="-0.8" max="0.8" step="0.01" value="0" required></label><label for="current-north">NORTH<input id="current-north" name="north" type="number" min="-0.8" max="0.8" step="0.01" value="0" required></label><label for="current-up">UP<input id="current-up" name="up" type="number" min="-0.8" max="0.8" step="0.01" value="0" required></label><span class="current-unit">m/s</span><button id="apply-current" type="submit">Apply current</button></div></form></div>
+      <div class="current-dynamics"><span id="propulsion-status">Propulsion telemetry pending</span><span id="thrust-status">Actuator status pending</span><span id="hydrophone-source">Hydrophone source pending</span><small>Uniform current · ENU components ±0.8 m/s</small></div>
+    </section>
+    <section class="metrics-grid">
+      <div class="metric-card panel"><span class="eyebrow">ENVIRONMENT COVERAGE</span><div class="metric-value" id="coverage">—</div><canvas id="coverage-chart" class="sparkline" aria-label="Coverage history"></canvas><p id="coverage-foot">Observed cells / mission region</p></div>
+      <div class="metric-card panel"><span class="eyebrow">LOCALIZATION ERROR</span><div class="metric-value" id="localization">—</div><canvas id="localization-chart" class="sparkline" aria-label="Localization error history"></canvas><p>Estimated position vs. simulation truth</p></div>
+      <div class="metric-card panel"><span class="eyebrow">MAPPING ERROR</span><div class="metric-value" id="mapping">—</div><canvas id="mapping-chart" class="sparkline" aria-label="Mapping error history"></canvas><p>Observed map vs. Gazebo surfaces</p></div>
+      <div class="metric-card panel"><span class="eyebrow">CLASSIFICATION ACCURACY</span><div class="metric-value" id="classification">—</div><canvas id="classification-chart" class="sparkline" aria-label="Classification accuracy history"></canvas><p id="classifier-foot">Simulation sensor baseline</p></div>
+    </section>
+    <section class="lower-grid">
+      <section class="panel tracks"><div class="panel-heading"><div><span class="eyebrow">CONTACTS</span><h2>Tracked contacts <span id="track-count" class="subtle">0</span></h2></div><span class="subtle">Confidence ≠ threat level</span></div><div class="table-scroll"><table><thead><tr><th>TRACK / CLASS</th><th>POSITION · ENU</th><th>CONFIDENCE</th><th>UNCERTAINTY</th><th>ASSESSMENT</th></tr></thead><tbody id="track-rows"><tr><td colspan="5" class="empty-small">Waiting for acoustic detections.</td></tr></tbody></table></div></section>
+      <section class="panel alerts"><div class="panel-heading"><div><span class="eyebrow">INCIDENT LOG</span><h2>Active incidents</h2></div><span id="alert-count" class="count-pill">0</span></div><div id="alert-list" class="alert-list"><div class="empty-small">Proximity incidents appear here as measured contacts approach the diver or fleet.</div></div></section>
+    </section>
+    <details class="simulation-info"><summary><span>ⓘ</span> Simulation model / limitations</summary><div><p id="simulation-model-details">This monitor displays simulation telemetry. Propulsion and classifier details appear when nodes connect. Acoustic noise, echoes, localization drift, and network outages are modeled; physical hardware behavior still requires field validation.</p><p id="acoustic-source-details">Sonar returns and hydrophone signatures are synthesized for the virtual scene. A numeric feature classifier is a simulation baseline; trained-model status is reported separately. Classification confidence and accuracy on this scene do not establish real-world detection performance.</p><p>Diver protection assigns escort positions around the moving diver; autonomous survey assigns exploration targets without using the diver. The protection radius is a proximity assessment volume, not a physical barrier. Coverage comes from measured observations and depends on node availability. Dashed lines show assigned goals; they do not promise a collision-free route.</p><p>Coverage is based on observations. Object positions include physical uncertainty; classification confidence is a separate estimate. Surface/obstacle points are reported sensor observations. The scene’s reference grid is visual guidance, not an observed map. Evaluation metrics compare estimates with simulator truth, which is excluded from normal detections and navigation decisions.</p><p id="scenario-details">Telemetry source: ROS 2 simulation adapter · local monitoring gateway.</p></div></details>
+    <footer><span class="brand-small">TIDEWATCH</span><span>Autonomous underwater swarm · Phase 1</span><span id="last-update">No telemetry received</span></footer>
+  </main>
+  <div id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
