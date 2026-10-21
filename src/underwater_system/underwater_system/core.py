@@ -17,6 +17,7 @@ from typing import Iterable, Mapping, Optional
 
 import numpy as np
 
+from .deterrent import DeterrentSpeaker, WildlifeResponse, time_to_enter
 from .mission import MissionPlanner
 
 CLASS_NAMES = ("unknown", "diver", "marine_life", "vehicle", "obstacle")
@@ -134,6 +135,22 @@ class SensorModel:
         self.horizontal_fov = horizontal_fov
         self.unknown_threshold = unknown_threshold
         self.sequence = defaultdict(int)
+        # Echo-signature emulator and template classifier shared with the ROS
+        # edge path, so offline accuracy no longer reads the true object type.
+        from .perception import EdgePerception, SonarFeatureModel
+        self.echo_model = SonarFeatureModel(seed + 331)
+        self.edge_classifier = EdgePerception({"unknown_threshold": unknown_threshold})
+
+    def classify_echo(self, kind: str, distance: float, speed: float, size: float) -> tuple[str, float]:
+        """Classify a synthesized echo from measurable features only."""
+        features = self.echo_model.measure(kind, distance, speed, size)
+        probabilities, details = self.edge_classifier._baseline(features)
+        labels = self.edge_classifier.class_labels
+        index = int(np.argmax(probabilities))
+        label, confidence = labels[index], float(probabilities[index])
+        if label == "unknown" or confidence < self.unknown_threshold:
+            return "unknown", float(probabilities[labels.index("unknown")])
+        return label, confidence
 
     def passive_features(self, kind: str, distance: float) -> dict:
         """Synthetic narrowband/tonality features, explicitly not raw audio."""
@@ -192,7 +209,8 @@ class SensorModel:
             local_cov = jacobian @ np.diag([range_sigma ** 2, angle_sigma ** 2,
                                            angle_sigma ** 2]) @ jacobian.T
             covariance = rotation @ local_cov @ rotation.T + np.eye(3) * 0.01
-            label, confidence = self.classify(self.passive_features(obj.kind, distance), obj.kind)
+            label, confidence = self.classify_echo(obj.kind, distance, float(np.linalg.norm(obj.velocity)),
+                                                   max(0.3, 2 * obj.radius))
             self.sequence[source] += 1
             observations.append(Observation(f"{source}:{self.sequence[source]}", source,
                                 timestamp, origin + rotation @ measured, covariance,
@@ -465,10 +483,12 @@ class PersistentMap:
     ground truth. ``snapshot`` limits visualization points, retaining all cells
     internally. ``evaluate`` compares observed elevation to a truth callback.
     """
-    def __init__(self, resolution: float = 1.0, max_cells: int = 60000):
+    def __init__(self, resolution: float = 1.0, max_cells: int = 60000,
+                 bounds=(-30.0, 30.0, -30.0, 30.0)):
         if resolution <= 0:
             raise ValueError("Map resolution must be positive")
         self.resolution, self.max_cells = resolution, max_cells
+        self.bounds = tuple(float(v) for v in bounds)  # x_min, x_max, y_min, y_max of the coverage region
         self.cells: dict[tuple, dict] = {}
         self.elevation: dict[tuple, dict] = {}
 
@@ -521,7 +541,7 @@ class PersistentMap:
                       "y": (key[1] + 0.5) * self.resolution, "z": round(value["z"], 3),
                       "samples": value["n"], "std_m": round(math.sqrt(value["m2"] / max(value["n"] - 1, 1)), 3)}
                      for key, value in list(self.elevation.items())[::max(1, math.ceil(len(self.elevation) / 1800))]]
-        coverage = min(1.0, len(self.elevation) * self.resolution ** 2 / 3600.0)
+        coverage = self.evaluate(bounds=self.bounds)["coverage_fraction"]
         return {"resolution_m": self.resolution, "observed_voxels": len(self.cells),
                 "observed_cells": len(self.elevation), "coverage": coverage,
                 "coverage_fraction": coverage,
@@ -530,7 +550,8 @@ class PersistentMap:
                 "elevation": elevation,
                 "unknown_policy": "Absent cells are unobserved; points contain measured returns only."}
 
-    def evaluate(self, truth_height=seabed_height, bounds=(-30, 30, -30, 30)) -> dict:
+    def evaluate(self, truth_height=seabed_height, bounds=None) -> dict:
+        bounds = self.bounds if bounds is None else bounds
         errors = []
         for key, value in self.elevation.items():
             x, y = (key[0] + 0.5) * self.resolution, (key[1] + 0.5) * self.resolution
@@ -552,7 +573,7 @@ def closest_approach(relative_position, relative_velocity, horizon: float = 20.0
 
 
 def assess_alerts(tracks: Iterable, diver_position, diver_velocity=None,
-                  protected_radius: float = 4.0, horizon: float = 20.0) -> list[dict]:
+                  protected_radius: float = 4.0, horizon: float = 40.0) -> list[dict]:
     """Classify measurable approach risk separately from object identity.
 
     A vehicle is not inherently hostile. Confidence, position uncertainty,
@@ -575,13 +596,18 @@ def assess_alerts(tracks: Iterable, diver_position, diver_velocity=None,
         lower_cpa = max(0.0, cpa - 2 * std)
         speed = float(np.linalg.norm(relative_v))
         approaching = float(relative @ relative_v) < -0.05
-        if distance > 18 and (not approaching or lower_cpa > protected_radius + 2):
+        eta = time_to_enter(relative, relative_v, protected_radius + 2 * std)
+        if eta is not None and eta > horizon:
+            eta = None
+        if distance > 30 and (not approaching or lower_cpa > protected_radius + 2):
             continue
         severity, reason = "info", "Object observed outside the protected zone"
         if lower_distance < protected_radius:
             severity, reason = "critical", "Position uncertainty overlaps the protected zone"
         elif approaching and lower_cpa < protected_radius and speed > 0.15:
             severity, reason = "warning", "Predicted trajectory enters the protected zone"
+            if eta is not None:
+                reason = f"Predicted to reach the protected zone in {eta:.0f} s"
         elif lower_distance < protected_radius + 4 or label == "unknown":
             severity, reason = "watch", "Close or uncertain observation requires human review"
         categories = {"vehicle": "approaching_vehicle", "marine_life": "marine_life",
@@ -595,6 +621,10 @@ def assess_alerts(tracks: Iterable, diver_position, diver_velocity=None,
                        "category": categories.get(label, "unknown_object"), "severity": severity,
                        "reason": reason, "distance_m": round(distance, 2),
                        "closest_approach_m": round(cpa, 2), "time_to_closest_s": round(time_to_cpa, 2),
+                       "time_to_zone_s": None if eta is None else round(eta, 1),
+                       "warning_stage": ("inside" if eta == 0 else "imminent" if eta is not None and eta <= 10
+                                         else "early" if eta is not None else None),
+                       "deterrable": label == "marine_life",
                        "position_std_m": round(std, 3), "relative_speed_m_s": round(speed, 3),
                        "requires_review": severity in ("watch", "warning", "critical"),
                        "hostility_determined": False})
@@ -776,6 +806,7 @@ class EdgeAgent:
         self.planner = MissionPlanner(index, config)
         self.tracker = MultiObjectTracker(prefix=f"{self.name}-track")
         self.map = PersistentMap()
+        self.speaker = DeterrentSpeaker(config.get("deterrent"))
         self.peers = {}
         self.pending_observations = deque(maxlen=30)
         self.last_telemetry = -math.inf
@@ -850,9 +881,13 @@ class EdgeAgent:
                                           goal_velocity=diver_velocity if self.planner.mode == "protect"
                                           and plan.status.get("phase") in ("escort", "predictive_watch") else None)
         # Navigation heartbeat plus one observation fits the 456-byte default cap.
+        deterrent = (self.speaker.decide(timestamp, position, diver_position, diver_velocity, tracks)
+                     if self.planner.mode == "protect" else self.speaker._idle("survey_mode"))
         telemetry = {"t": round(timestamp, 3), "p": np.round(position, 2).tolist(),
                      "v": np.round(velocity, 2).tolist(), "r": 0.04, "o": [],
                      "m": {"mode": self.planner.mode, "target": np.round(plan.goal, 1).tolist()}}
+        if deterrent["active"]:
+            telemetry["dt"] = [int(round(deterrent["level_db"])), deterrent["target_class"]]
         if self.pending_observations:
             telemetry["o"].append(self.pending_observations.popleft())
         mission = dict(plan.status)
@@ -865,7 +900,7 @@ class EdgeAgent:
                   "target": plan.goal.tolist(), "mission": mission,
                   "observations": [o.to_payload() for o in normalized],
                   "tracks": tracks, "telemetry": telemetry,
-                  "peer_count": len(peers),
+                  "peer_count": len(peers), "deterrent": deterrent,
                   "alerts": alerts}
         self.last_result = result
         return result
@@ -893,7 +928,9 @@ class SimulationCore:
         self.network = AcousticTDMA(seed=seed + 19,
                                    loss_probability=float(config.get("packet_loss", 0.12)))
         self.tracker = MultiObjectTracker(prefix="global")
-        self.map = PersistentMap(resolution=float(config.get("map_resolution", 1)))
+        region = config.get("exploration", {}).get("bounds", [[-30, 30], [-30, 30]])
+        self.map = PersistentMap(resolution=float(config.get("map_resolution", 1)),
+                                 bounds=(*region[0], *region[1]))
         self.objects = {
             "diver": WorldObject("diver", "diver", [0, 0, -7], [0.10, 0, 0], 0.65),
             "intruder": WorldObject("intruder", "vehicle", [24, -1.5, -7], [-0.50, 0.04, 0], 1.1),
@@ -908,6 +945,14 @@ class SimulationCore:
             self.auvs[agent.name] = {"position": agent.controller.target(self.objects["diver"].position),
                                      "velocity": np.zeros(3), "yaw": agent.index * 2 * math.pi / 3}
         self.external_truth = False
+        self.wildlife = WildlifeResponse()
+        self.flee_offset = defaultdict(lambda: np.zeros(3))  # displacement from each animal's nominal route
+        self.speakers = {}
+        self.deterrent_active_s = 0.0
+        self.min_wildlife_diver_distance = math.inf
+        self.zone_breach_s = 0.0
+        self.first_warned = {}
+        self.first_entry = {}
         self.drift = {agent.name: np.zeros(3) for agent in self.agents}
         self.mailboxes = {agent.name: [] for agent in self.agents}
         self.last_sense = -math.inf
@@ -955,10 +1000,18 @@ class SimulationCore:
         diver = self.objects["diver"]
         diver.velocity = np.array([0.10, 0.06 * math.cos(self.time * 0.07), 0.0])
         for obj in self.objects.values():
-            if obj.object_id == "large_marine_life":
-                angle = self.time / 22
-                obj.position = np.array([12 * math.cos(angle), 7 * math.sin(angle), -10.5])
-                obj.velocity = np.array([-12 / 22 * math.sin(angle), 7 / 22 * math.cos(angle), 0.0])
+            if obj.kind == "marine_life":
+                flee = self.wildlife.velocity(obj.object_id, obj.position, self.speakers.values(), dt)
+                offset = self.flee_offset[obj.object_id]
+                offset += flee * dt
+                offset *= math.exp(-0.04 * dt)  # animals drift back toward their route
+                if obj.object_id == "large_marine_life":
+                    angle = self.time / 22
+                    nominal = np.array([12 * math.cos(angle), 7 * math.sin(angle), -10.5])
+                    obj.velocity = np.array([-12 / 22 * math.sin(angle), 7 / 22 * math.cos(angle), 0.0]) + flee
+                    obj.position = nominal + offset
+                    continue
+                obj.position += (obj.velocity + flee) * dt
                 continue
             if obj.object_id == "intruder" and obj.position[0] < -14:
                 obj.velocity[0] = 0.50
@@ -1021,6 +1074,8 @@ class SimulationCore:
                                     uncertainty=float(np.linalg.norm(self.drift[agent.name]) + 0.03))
                 self.mailboxes[agent.name] = []
                 self.commands[agent.name] = result["command_velocity"]
+                self.speakers[agent.name] = {"position": state["position"].copy(),
+                                             "level_db": result["deterrent"]["level_db"] if result["deterrent"]["active"] else 0.0}
                 if agent.index == 0:  # Gateway's own edge estimates need no acoustic hop.
                     self.tracker.update(observations, self.time)
                 if broadcasting:
@@ -1042,6 +1097,7 @@ class SimulationCore:
             for i in range(3):
                 for j in range(i + 1, 3):
                     self.minimum_separation = min(self.minimum_separation, float(np.linalg.norm(positions[i] - positions[j])))
+            self._protection_bookkeeping(interval)
             self.tracker.update([], self.time)
             if sensing:
                 self.last_sense = self.time
@@ -1051,6 +1107,32 @@ class SimulationCore:
                 self.last_broadcast = self.time
         self.last_snapshot = self.snapshot()
         return self.last_snapshot
+
+    def _protection_bookkeeping(self, dt: float):
+        """Truth-side measures of how early and how well the diver was protected."""
+        if self.mode != "protect":
+            return
+        diver = self.objects["diver"]
+        if any(speaker["level_db"] > 0 for speaker in self.speakers.values()):
+            self.deterrent_active_s += dt
+        warned = {a["track_id"] for a in assess_alerts(self.tracker.tracks.values(), diver.position, diver.velocity)
+                  if a["severity"] in ("warning", "critical")}
+        inside = False
+        for obj in self.objects.values():
+            if obj.kind in ("diver",):
+                continue
+            distance = float(np.linalg.norm(obj.position - diver.position))
+            if obj.kind in ("marine_life", "vehicle", "unknown"):
+                self.min_wildlife_diver_distance = min(self.min_wildlife_diver_distance, distance)
+            for track_id in warned:
+                track = self.tracker.tracks.get(track_id)
+                if track is not None and np.linalg.norm(track.position - obj.position) < 4.0:
+                    self.first_warned.setdefault(obj.object_id, self.time)
+            if distance < 4.0 and obj.kind != "obstacle":
+                inside = True
+                self.first_entry.setdefault(obj.object_id, self.time)
+        if inside:
+            self.zone_breach_s += dt
 
     def model_states(self) -> dict:
         states = {name: {"position": state["position"].tolist(), "velocity": state["velocity"].tolist(),
@@ -1081,6 +1163,13 @@ class SimulationCore:
                         "sensor_observations": self.classification_count,
                         "unknown_observations": self.unknown_count,
                         "mission_mode": self.mode,
+                        "deterrent_activations": sum(agent.speaker.activations for agent in self.agents),
+                        "deterrent_active_s": round(self.deterrent_active_s, 1),
+                        "min_animal_diver_distance_m": (self.min_wildlife_diver_distance
+                                                        if math.isfinite(self.min_wildlife_diver_distance) else None),
+                        "protected_zone_breach_s": round(self.zone_breach_s, 1),
+                        "warning_lead_times_s": {name: round(self.first_entry[name] - at, 1)
+                                                 for name, at in self.first_warned.items() if name in self.first_entry},
                         "formation_rmse_m": float(np.sqrt(np.mean(np.square(self.formation_errors)))) if self.mode == "protect" and self.formation_errors else None,
                         "mission_target_rmse_m": float(np.sqrt(np.mean(np.square(self.mission_errors)))) if self.mission_errors else None,
                         "exploration_coverage_pct": self.mission_status()["coverage_pct"],
@@ -1119,7 +1208,8 @@ class SimulationCore:
                           "target": agent.last_result.get("target", state["position"].tolist()),
                           "mission": agent.last_result.get("mission", {"mode": self.mode, "state": "ready"}),
                           "localization_std_m": float(np.linalg.norm(self.drift[agent.name]) + 0.03),
-                          "peer_count": agent.last_result.get("peer_count", 0), "gateway": agent.index == 0})
+                          "peer_count": agent.last_result.get("peer_count", 0), "gateway": agent.index == 0,
+                          "deterrent": agent.last_result.get("deterrent", {"active": False, "level_db": 0.0})})
         alerts = assess_alerts(self.tracker.tracks.values(), diver.position, diver.velocity)
         if self.mode == "explore":
             by_track = {}

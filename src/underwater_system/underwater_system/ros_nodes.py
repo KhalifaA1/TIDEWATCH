@@ -26,6 +26,7 @@ from tf2_ros import TransformBroadcaster
 from visualization_msgs.msg import Marker, MarkerArray
 from ros_gz_interfaces.srv import ControlWorld
 
+from .deterrent import WildlifeResponse
 from .core import (EdgeAgent, SensorModel, WorldObject, MultiObjectTracker,
                    Observation, PersistentMap, AcousticTDMA, assess_alerts, navigation_alerts)
 from .controls import DiverPilot, validate_command
@@ -145,6 +146,9 @@ class Instruments(MissionNode):
         self.evaluated_uids = set()
         self.create_subscription(String, '/tidewatch/classifier_predictions', self.evaluate_predictions, 10)
         self.targets = {}
+        self.speaker_levels = {}
+        self.wildlife = WildlifeResponse()
+        self.flee_offset = {}
         for key in IDS:
             self.create_subscription(String, f'/{key}/edge_status', self.edge_target, 5)
         self.map_rmse = None
@@ -166,6 +170,8 @@ class Instruments(MissionNode):
         value = json.loads(message.data)
         if value.get('mission', {}).get('mode') == self.mission['mode']:
             self.targets[value['id']] = value['mission'].get('target')
+        speaker = value.get('deterrent') or {}
+        self.speaker_levels[value['id']] = float(speaker.get('level_db', 0.0)) if speaker.get('active') else 0.0
 
     def reset(self):
         self.rng = np.random.default_rng(self.config['seed'])
@@ -183,6 +189,8 @@ class Instruments(MissionNode):
         self.map_rmse = None
         self.map_samples = 0
         self.targets.clear()
+        self.speaker_levels.clear()
+        self.flee_offset.clear()
 
     def evaluate_predictions(self, message):
         packet = json.loads(message.data)
@@ -252,10 +260,22 @@ class Instruments(MissionNode):
             # A large wildlife crossing, not a species-recognition claim.
             'large_marine_life': np.array([12*math.cos(now/22), 7*math.sin(now/22), -10.5]),
         }
-        for name, desired in targets.items():
+        dt = 1/self.config['sensor_rate']
+        speakers = [{'position': self.states[key]['position'], 'level_db': level}
+                    for key, level in self.speaker_levels.items() if key in self.states]
+        for name, desired in list(targets.items()):
             state = self.states.get(name)
             if not state:
                 continue
+            if KINDS.get(name) == 'marine_life' and self.mission['status'] != 'paused':
+                # Sound from active AUV speakers pushes the animal off its route;
+                # the displacement relaxes back once the sound stops.
+                flee = self.wildlife.velocity(name, state['position'], speakers, dt)
+                offset = self.flee_offset.get(name, np.zeros(3)) + flee*dt
+                offset = offset*math.exp(-0.04*dt)
+                self.flee_offset[name] = offset
+                desired = desired + offset
+                targets[name] = desired
             if self.mission['status'] == 'paused':
                 self.cmd[name].publish(twist([0,0,0], state['yaw']))
                 continue
@@ -270,7 +290,8 @@ class Instruments(MissionNode):
                 self.cmd[name].publish(twist(velocity, state['yaw']))
                 continue
             error = desired-state['position']
-            velocity = np.clip(error*0.8, -0.65, 0.65)
+            limit = 1.4 if KINDS.get(name) == 'marine_life' else 0.65
+            velocity = np.clip(error*0.8, -limit, limit)
             desired_yaw = math.atan2(velocity[1], velocity[0])
             angular = np.clip(math.atan2(math.sin(desired_yaw-state['yaw']),
                                         math.cos(desired_yaw-state['yaw']))*0.8, -0.5, 0.5)
@@ -528,7 +549,7 @@ class AUV(MissionNode):
         self.status.publish(encode({'id': self.unit, 'time': now, 'tracks': len(result.get('tracks', [])),
                                     'peer_count': len(peers), 'surfacing': surfacing,
                                     'acoustic_features': acoustic_features,
-                                    'mission': result['mission'],
+                                    'mission': result['mission'], 'deterrent': result['deterrent'],
                                     'local_map_cells': len(self.agent.map.cells), 'propulsion':self.propulsion.last}))
         if now-self.last_transmit < 3*self.config['acoustic']['slot_duration']:
             return
@@ -538,6 +559,8 @@ class AUV(MissionNode):
                     'a': packet['yaw'], 'tu':self.propulsion.last.get('thrust_utilization',0),
                     'pw':self.propulsion.last.get('power_estimate_w',0)}
         plan = result['mission']
+        if result['deterrent']['active']:
+            outgoing['dt'] = [int(round(result['deterrent']['level_db'])), result['deterrent']['target_class']]
         outgoing['m'] = {'m': plan['mode'], 'g': plan['target'], 's': plan['phase']}
         if plan['mode'] == 'explore':
             outgoing['m'].update(o=plan.get('observed_cells',0), c=plan.get('coverage',0),
@@ -637,7 +660,7 @@ class Station(MissionNode):
         self.exploration_cells = set()
         self.diver_pilot = DiverPilot()
         self.tracker = MultiObjectTracker(max_age=15.0)
-        self.map = PersistentMap(resolution=config['map_resolution'])
+        self.map = PersistentMap(resolution=config['map_resolution'], bounds=(*config.get('exploration', {}).get('bounds', [[-30, 30], [-30, 30]])[0], *config.get('exploration', {}).get('bounds', [[-30, 30], [-30, 30]])[1]))
         self.diver = [0, 0, -10]
         self.network = {}
         self.metrics = {}
@@ -661,7 +684,7 @@ class Station(MissionNode):
         self.exploration_cells.clear()
         self.diver_pilot.stop()
         self.tracker = MultiObjectTracker(max_age=15.0)
-        self.map = PersistentMap(resolution=self.config['map_resolution'])
+        self.map = PersistentMap(resolution=self.config['map_resolution'], bounds=(*self.config.get('exploration', {}).get('bounds', [[-30, 30], [-30, 30]])[0], *self.config.get('exploration', {}).get('bounds', [[-30, 30], [-30, 30]])[1]))
         self.metrics.clear()
 
     def network_update(self, message):
@@ -810,6 +833,8 @@ class Station(MissionNode):
             auvs.append({'id': key, 'position': displayed, 'velocity': value['v'],
                          'uncertainty': uncertainty, 'online': age < self.config['acoustic']['ttl']+self.config['gateway']['burst_interval']+1,
                          'age': age, 'yaw':value.get('a',0),
+                         'deterrent': ({'active': True, 'level_db': value['dt'][0], 'target_class': value['dt'][1]}
+                                       if value.get('dt') and age < 3.0 else {'active': False, 'level_db': 0.0}),
                          'mission': self.unit_missions.get(key),
                          'propulsion':{'mode':'native_thrusters','thrust_utilization':value.get('tu',0),
                                        'power_estimate_w':value.get('pw',0)}})

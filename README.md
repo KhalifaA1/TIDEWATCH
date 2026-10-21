@@ -75,6 +75,14 @@ flowchart LR
 
 Coordinates are local ENU: x east, y north, z up. Underwater z is negative. Ground truth is available to the instrument emulator and evaluator; it is excluded from edge navigation, association and classification inputs.
 
+## Deterrent speakers and early warning
+
+Each AUV carries an acoustic deterrent speaker. From its own tracked contacts and the diver beacon, an AUV predicts when a classified marine-life contact will enter a 9 m warning radius around the diver. If that is within 30 s and the animal is inside the speaker's 24 m range, it sounds the lowest source level that should reach the animal (135-175 dB re 1 uPa at 1 m). The received level at the diver is capped, and a 6 s on / 4 s off duty cycle limits exposure. Vehicles and unknown objects are not deterred; they raise alerts and move the escort formation instead.
+
+Simulated animals flee from the sound field of active speakers, habituate to repeated exposure and drift back to their route when it stops. Thresholds are in `config/mission.yaml` under `deterrent`. They are illustrative simulation values, not species audiograms or diver-safety limits. Setting `deterrent.enabled: false` gives a baseline for comparison.
+
+Protection alerts now look 40 s ahead and report `time_to_zone_s` and a `warning_stage` (`early`, `imminent`, `inside`). The offline evaluation adds `deterrent_activations`, `min_animal_diver_distance_m`, `protected_zone_breach_s` and `warning_lead_times_s`.
+
 ## Contacts and wildlife
 
 The scene includes a diver, a moving vehicle, fish, a large marine-life crossing, a rock hazard and an unknown object. The large animal is a synthetic wildlife encounter; it is not a validated shark model.

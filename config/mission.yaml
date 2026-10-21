@@ -30,6 +30,19 @@ propulsion:
   thruster_time_constant_s: 0.12
   thrust_slew_n_s: 240.0
   propeller_diameter_m: 0.12
+# Each AUV carries an acoustic deterrent speaker that scares marine life away
+# from the diver. Levels are dB re 1 uPa at 1 m; thresholds are simulation values.
+deterrent:
+  enabled: true
+  min_source_level_db: 135.0
+  max_source_level_db: 175.0
+  range_m: 24.0
+  deterrence_level_db: 110.0   # level an approaching animal should receive
+  diver_limit_db: 135.0        # never exceed this received level at the diver
+  warning_radius_m: 9.0        # animals predicted to enter this are deterred
+  horizon_s: 30.0
+  max_on_s: 6.0                # duty cycle limits exposure and habituation
+  cooldown_s: 4.0
 perception:
   sample_rate_hz: 8000
   # Optional PCM16 WAV at this sample rate; null keeps synthetic audio.

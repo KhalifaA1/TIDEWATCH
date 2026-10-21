@@ -7,8 +7,8 @@ const percent = (value, digits = 1) => value == null || !Number.isFinite(Number(
 const escape = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const position = object => Array.isArray(object?.position) && object.position.length >= 3 ? object.position.map(v => finite(v)) : null;
 const distance = (a, b) => Math.hypot(a[0]-b[0], a[1]-b[1], a[2]-b[2]);
-const colors = {mint:'#a0b2a1',blue:'#98adbf',amber:'#c5ad76',red:'#cf8680',map:'#5d7079'};
-const nodeColors = ['#a0b2a1','#98adbf','#b4acbe'];
+const colors = {mint:'#4fd8c0',blue:'#6cb4e8',amber:'#f0b45a',red:'#f0766e',map:'#7fa0b0'};
+const nodeColors = ['#4fd8c0','#6cb4e8','#a99bea'];
 let state = null, lastSeen = 0, lastSimTime = null, lastTableUpdate = 0, gatewayConnected = false;
 const history = {coverage:[],localization:[],mapping:[],classification:[],network:[]};
 const trails = new Map();
@@ -274,7 +274,7 @@ function textLabel(p,title,subtitle,color,offset=null) {
   let y=initialY;
   for(const shift of [0,-34,34,-68,68]){const candidate={x:x-5,y:initialY+shift-11,w:boxWidth,h:boxHeight};if(!labelBoxes.some(b=>candidate.x<b.x+b.w+5&&candidate.x+candidate.w+5>b.x&&candidate.y<b.y+b.h+4&&candidate.y+candidate.h+4>b.y)){y=initialY+shift;break;}}
   labelBoxes.push({x:x-5,y:y-11,w:boxWidth,h:boxHeight});
-  ctx.fillStyle='#111a21df';ctx.fillRect(x-5,y-11,boxWidth,boxHeight);
+  ctx.fillStyle='#06121adb';ctx.fillRect(x-5,y-11,boxWidth,boxHeight);ctx.strokeStyle=`${color}40`;ctx.lineWidth=1;ctx.strokeRect(x-5,y-11,boxWidth,boxHeight);
   ctx.font='600 9px ui-sans-serif, sans-serif';
   ctx.fillStyle=color;ctx.fillText(title,x,y);
   if(subtitle){ctx.font='8px ui-monospace, monospace';ctx.fillStyle='#a7b7c3';ctx.fillText(subtitle,x,y+12);}
@@ -289,6 +289,12 @@ function drawAuv(auv,index) {
   const local=(x,y,z=0)=>[p[0]+x*Math.cos(heading)-y*Math.sin(heading),p[1]+x*Math.sin(heading)+y*Math.cos(heading),p[2]+z];
   const q=project(p);
   uncertaintyHalo(p,auv.uncertainty,color);
+  if(auv.deterrent?.active){
+    // Expanding rings show an active deterrent speaker; the outer ring is its audible range.
+    const phase=(performance.now()/1400)%1;
+    for(const k of [0,.33,.66]){const f=(phase+k)%1;circleWorld(p,1+f*22,`${colors.amber}${Math.round((1-f)*90).toString(16).padStart(2,'0')}`,1.5);}
+    circleWorld(p,24,`${colors.amber}30`,1,null,[2,6]);
+  }
   line([p[0],p[1],-20],p,`${color}24`,1,[3,5]);
   circleWorld([p[0],p[1],-20],.45,`${color}48`,1,`${color}15`);
   // Inspection ROV: an open square frame, protected motor pods and front sonar.
@@ -325,7 +331,7 @@ function drawDiver(diver) {
 
 function drawTrack(track) {
   const p=position(track);if(!p)return;
-  const risk=riskCategory(track.risk),color=risk==='danger'?colors.red:risk==='warning'?colors.amber:'#9caec3';
+  const risk=riskCategory(track.risk),color=risk==='danger'?colors.red:risk==='warning'?colors.amber:'#8fb3c9';
   uncertaintyHalo(p,track.uncertainty,color);
   const q=project(p);ctx.strokeStyle=color;ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(q[0],q[1]-5);ctx.lineTo(q[0]+5,q[1]);ctx.lineTo(q[0],q[1]+5);ctx.lineTo(q[0]-5,q[1]);ctx.closePath();ctx.fillStyle=`${color}35`;ctx.fill();ctx.stroke();
   const velocity=track.velocity || [];if(Math.hypot(finite(velocity[0]),finite(velocity[1]))>.15)line(p,[p[0]+finite(velocity[0])*3,p[1]+finite(velocity[1])*3,p[2]+finite(velocity[2])*3],`${color}7a`,1,[4,3]);
@@ -354,16 +360,16 @@ function drawMissionGoals(auvs) {
 
 function drawScene() {
   [width,height]=resizeCanvas(scene);scale=Math.min(width/80,height/44)*camera.zoom;labelBoxes=[];
-  ctx.fillStyle='#111a21';ctx.fillRect(0,0,width,height);
+  const sky=ctx.createLinearGradient(0,0,0,height);sky.addColorStop(0,'#0a2a3b');sky.addColorStop(.55,'#07161f');sky.addColorStop(1,'#040d13');ctx.fillStyle=sky;ctx.fillRect(0,0,width,height);
   // Explicit visual reference grid; observed seabed points are drawn separately.
-  polygon([[-35,-35,-20],[35,-35,-20],[35,35,-20],[-35,35,-20]],'#0d253052','#20465355');
-  for(let v=-30;v<=30;v+=5){line([v,-35,-20],[v,35,-20],v===0?'#2e5a6665':'#2044524a');line([-35,v,-20],[35,v,-20],v===0?'#2e5a6665':'#2044524a');}
+  polygon([[-35,-35,-20],[35,-35,-20],[35,35,-20],[-35,35,-20]],'#0d3a4a40','#2a6a7e55');
+  for(let v=-30;v<=30;v+=5){line([v,-35,-20],[v,35,-20],v===0?'#3a7a8c70':'#25566644');line([-35,v,-20],[35,v,-20],v===0?'#3a7a8c70':'#25566644');}
   for(let v=-20;v<=-5;v+=5){line([-35,35,v],[35,35,v],'#15374233');line([-35,-35,v],[-35,35,v],'#15374233');}
   line([-35,35,-20],[-35,35,-3],'#28525f66');line([35,35,-20],[35,35,-3],'#28525f44');
   const axisOrigin=[-31,-31,-20];line(axisOrigin,[-24,-31,-20],'#98adbf88');line(axisOrigin,[-31,-24,-20],'#a0b2a188');line(axisOrigin,[-31,-31,-13],'#c5ad7677');
   [[[-23,-31,-20],'E',colors.blue],[[-31,-23,-20],'N',colors.mint],[[-31,-31,-12],'UP',colors.amber]].forEach(([p,t,c])=>{const q=project(p);ctx.fillStyle=c;ctx.font='8px monospace';ctx.fillText(t,q[0]+3,q[1]);});
   const measuredCells=state?.map?.elevation || [],resolution=finite(state?.map?.resolution_m,1),cellStride=Math.max(1,Math.ceil(measuredCells.length/1800));
-  for(let i=0;i<measuredCells.length;i+=cellStride){const cell=measuredCells[i];if(![cell.x,cell.y,cell.z].every(v=>Number.isFinite(Number(v))))continue;const x=Number(cell.x),y=Number(cell.y),z=Number(cell.z),r=resolution*.48;polygon([[x-r,y-r,z],[x+r,y-r,z],[x+r,y+r,z],[x-r,y+r,z]],'#8b9d9c20',null);}
+  for(let i=0;i<measuredCells.length;i+=cellStride){const cell=measuredCells[i];if(![cell.x,cell.y,cell.z].every(v=>Number.isFinite(Number(v))))continue;const x=Number(cell.x),y=Number(cell.y),z=Number(cell.z),r=resolution*.48;polygon([[x-r,y-r,z],[x+r,y-r,z],[x+r,y+r,z],[x-r,y+r,z]],'#6fb7c026',null);}
   const points=state?.map?.points || [];
   const stride=Math.max(1,Math.ceil(points.length/3500));
   for(let i=0;i<points.length;i+=stride){const p=points[i];if(!Array.isArray(p)||p.length<3)continue;const q=project(p);if(q[0]<0||q[0]>width||q[1]<0||q[1]>height)continue;const elevation=Math.max(0,p[2]+20);ctx.fillStyle=elevation>1?'#9db0ad9c':'#81959d91';const r=elevation>1?2.5:1.8;ctx.fillRect(q[0]-r/2,q[1]-r/2,r,r);}
@@ -521,7 +527,7 @@ function updateUI(next) {
   if(meter==null)$('mission-meter').removeAttribute('aria-valuenow');else $('mission-meter').setAttribute('aria-valuenow',String(meterPercent));
   $('meter-caption').textContent=explore?`Observed region / ${percent(meter)}`:`Linked units / ${online} of ${auvs.length}`;
   $('fleet-count').textContent=`${online} / ${auvs.length}`;
-  $('fleet-list').innerHTML=auvs.map((a,i)=>{const p=position(a),speed=Array.isArray(a.velocity)?Math.hypot(...a.velocity.map(x=>finite(x))):null,propulsion=a.propulsion||{},utilization=propulsion.thrust_utilization,hasUtilization=utilization!=null&&Number.isFinite(Number(utilization)),reported=activeMode(a.mission)===activeMode(mission),goal=reported?goalPosition(a):null;return `<div class="fleet-row"><span class="node-icon${a.online===false?' offline':''}" style="color:${a.online===false?colors.red:nodeColors[i%nodeColors.length]}">◈</span><div class="node-meta"><div class="node-name">${escape(String(a.id||`AUV ${i+1}`).toUpperCase().replace('AUV_','AUV 0'))}</div><div class="node-role">${escape(reported?labelFor(a.mission?.role || a.mission?.phase):'Awaiting directive')}${goal&&p?` / ${distance(p,goal).toFixed(1)} m to goal`:''}</div><div class="node-desc">${p?`${Math.abs(p[2]).toFixed(1)} m DEPTH`:''}${speed!=null?` · ${speed.toFixed(2)} m/s`:''}${a.age!=null?` · ${number(a.age,1)} s REPORT`:''}</div>${hasUtilization?`<div class="node-actuator${Number(utilization)>=.95?' saturated':''}">${Number(utilization)>=.95?'SATURATED':'THRUST'} ${percent(utilization,0)}${propulsion.power_estimate_w!=null?` · ${number(propulsion.power_estimate_w,0)} W EST.`:''}</div>`:''}</div><div class="node-status"${a.online===false?` style="color:${colors.red}"`:''}>${a.online===false?'LINK LOST':'ONLINE'}<small>±${number(a.uncertainty,2)} m</small></div></div>`;}).join('')||'<div class="empty-small">No nodes registered.</div>';
+  $('fleet-list').innerHTML=auvs.map((a,i)=>{const p=position(a),speed=Array.isArray(a.velocity)?Math.hypot(...a.velocity.map(x=>finite(x))):null,propulsion=a.propulsion||{},utilization=propulsion.thrust_utilization,hasUtilization=utilization!=null&&Number.isFinite(Number(utilization)),reported=activeMode(a.mission)===activeMode(mission),goal=reported?goalPosition(a):null;return `<div class="fleet-row"><span class="node-icon${a.online===false?' offline':''}" style="color:${a.online===false?colors.red:nodeColors[i%nodeColors.length]}">◈</span><div class="node-meta"><div class="node-name">${escape(String(a.id||`AUV ${i+1}`).toUpperCase().replace('AUV_','AUV 0'))}</div><div class="node-role">${escape(reported?labelFor(a.mission?.role || a.mission?.phase):'Awaiting directive')}${goal&&p?` / ${distance(p,goal).toFixed(1)} m to goal`:''}</div><div class="node-desc">${p?`${Math.abs(p[2]).toFixed(1)} m DEPTH`:''}${speed!=null?` · ${speed.toFixed(2)} m/s`:''}${a.age!=null?` · ${number(a.age,1)} s REPORT`:''}</div>${a.deterrent?.active?`<div class="node-deterrent">SPEAKER ${number(a.deterrent.level_db,0)} dB · DETERRING ${escape(labelFor(a.deterrent.target_class).toUpperCase())}</div>`:''}${hasUtilization?`<div class="node-actuator${Number(utilization)>=.95?' saturated':''}">${Number(utilization)>=.95?'SATURATED':'THRUST'} ${percent(utilization,0)}${propulsion.power_estimate_w!=null?` · ${number(propulsion.power_estimate_w,0)} W EST.`:''}</div>`:''}</div><div class="node-status"${a.online===false?` style="color:${colors.red}"`:''}>${a.online===false?'LINK LOST':'ONLINE'}<small>±${number(a.uncertainty,2)} m</small></div></div>`;}).join('')||'<div class="empty-small">No nodes registered.</div>';
   const loss=network.loss_rate;
   $('packet-loss').textContent=percent(loss);$('packet-delivered').textContent=network.delivered??'—';$('queued').textContent=network.queued??'—';
   const outage=Boolean(network.outage??network.outage_active??mission.outage);
@@ -538,7 +544,7 @@ function updateUI(next) {
     const byTrack=new Map(alerts.map(alert=>[String(alert.track_id),alert]));
     $('track-rows').innerHTML=tracks.map(track=>{const p=position(track),category=riskCategory(track.risk),assessment={info:'Monitor',warning:'Review contact',danger:'Proximity hazard'}[category],approach=byTrack.get(String(track.id));return `<tr><td><span class="track-name">${escape(labelFor(track.label))}</span><span class="track-id">${escape(track.id)}</span></td><td class="mono">${p?p.map(x=>x.toFixed(1)).join(' / '):'—'}</td><td><span class="confidence-bar"><span style="width:${Math.max(0,Math.min(100,finite(track.confidence)*100))}%"></span></span>${percent(track.confidence,0)}</td><td class="mono">±${number(track.uncertainty,2)} m</td><td><span class="risk-badge ${category}">${escape(assessment)}</span>${approach?.closest_approach_m!=null?`<span class="contact-approach">CPA ${number(approach.closest_approach_m,1)} m / ${number(approach.time_to_closest_s,1)} s</span>`:''}</td></tr>`;}).join('')||'<tr><td colspan="5" class="empty-small">No active contacts. Acoustic sensors are scanning.</td></tr>';
     $('alert-count').textContent=String(alerts.length);
-    $('alert-list').innerHTML=alerts.slice(0,12).map(alert=>{const category=riskCategory(alert.level),time=alert.time??state.time;return `<div class="alert-entry ${category}"><span class="alert-symbol">${category==='info'?'ⓘ':'△'}</span><div><div class="alert-message">${escape(alert.message)}</div><div class="alert-time">${displayTime(time)} / ${escape(String(alert.level||'info').toUpperCase())}${alert.track_id?` / ${escape(alert.track_id)}`:''}${alert.closest_approach_m!=null?`<br>Closest approach ${number(alert.closest_approach_m,1)} m in ${number(alert.time_to_closest_s,1)} s`:''}</div></div></div>`;}).join('')||'<div class="empty-small">No active proximity alerts.</div>';
+    $('alert-list').innerHTML=alerts.slice(0,12).map(alert=>{const category=riskCategory(alert.level),time=alert.time??state.time;return `<div class="alert-entry ${category}"><span class="alert-symbol">${category==='info'?'ⓘ':'△'}</span><div><div class="alert-message">${escape(alert.message)}</div><div class="alert-time">${displayTime(time)} / ${escape(String(alert.level||'info').toUpperCase())}${alert.track_id?` / ${escape(alert.track_id)}`:''}${alert.time_to_zone_s!=null?`<br>Reaches protected zone in ${number(alert.time_to_zone_s,0)} s`:''}${alert.deterrable?' · deterrable':''}${alert.closest_approach_m!=null?`<br>Closest approach ${number(alert.closest_approach_m,1)} m in ${number(alert.time_to_closest_s,1)} s`:''}</div></div></div>`;}).join('')||'<div class="empty-small">No active proximity alerts.</div>';
     lastTableUpdate=Date.now();
   }
   if(state.time!==lastSimTime){
