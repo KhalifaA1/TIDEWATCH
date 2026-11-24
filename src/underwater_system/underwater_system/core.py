@@ -874,12 +874,16 @@ class EdgeAgent:
                       track.velocity)
                      for track in self.tracker.tracks.values()
                      if track.classification != "diver"]
+        goal_velocity = None
+        if self.planner.mode == "protect" and plan.status.get("phase") in ("escort", "predictive_watch"):
+            # Follow the slot's full motion: the diver's drift plus the ring's
+            # rotation toward a threat (feedforward; feedback still corrects).
+            goal_velocity = vec3(diver_velocity) + vec3(plan.status.get("ring_velocity", [0, 0, 0]))
         command = self.controller.command(position, velocity, diver_position, diver_velocity,
                                           peers=peers, obstacles=obstacles, dt=dt,
                                           navigation_goal=plan.goal,
                                           protect_diver=self.planner.mode == "protect",
-                                          goal_velocity=diver_velocity if self.planner.mode == "protect"
-                                          and plan.status.get("phase") in ("escort", "predictive_watch") else None)
+                                          goal_velocity=goal_velocity)
         # Navigation heartbeat plus one observation fits the 456-byte default cap.
         deterrent = (self.speaker.decide(timestamp, position, diver_position, diver_velocity, tracks)
                      if self.planner.mode == "protect" else self.speaker._idle("survey_mode"))
