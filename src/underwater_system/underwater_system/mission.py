@@ -185,6 +185,8 @@ class MissionPlanner:
         self._home = None
         self._distance = 0.0
         self._rotation = 0.0
+        self._ring_velocity = np.zeros(3)
+        self._threat_id = None
         self._target = None
         self._target_key = None
         self._target_score = 0.0
@@ -291,7 +293,7 @@ class MissionPlanner:
         beacon += velocity * max(0, now - at)
         if uncertainty > self.uncertainty_limit * 2:
             return position.copy(), beacon, 0.0, "localization_hold", "localization_recovery", {}
-        best = None
+        best = current = None
         watch_radius = self.protected_radius + self.radius + 8
         contacts = list(self._contacts(observations, now))
         for contact, contact_v, kind, confidence, std, identifier in contacts:
@@ -301,13 +303,25 @@ class MissionPlanner:
             closest_distance = float(np.linalg.norm(relative + relative_v * closest_t))
             closing = -float(np.dot(relative, relative_v)) / max(float(np.linalg.norm(relative)), 1e-6)
             effective_distance = max(0, closest_distance - min(std * 2, 4))
-            risk = confidence * max(0, 1 - effective_distance / watch_radius) * (1 if closing > 0.05 else 0.25)
+            # Weight closing speed smoothly (0.25 when receding, 1.0 when
+            # closing at >= 0.15 m/s). A hard 0.05 m/s switch made risk jump
+            # 4x on small speed changes and the ring flip between threats.
+            approach = 0.25 + 0.75 * float(np.clip(closing / 0.15, 0.0, 1.0))
+            risk = confidence * max(0, 1 - effective_distance / watch_radius) * approach
             direction = relative + relative_v * min(closest_t, self.prediction_horizon / 2)
             if np.linalg.norm(direction[:2]) < 1e-5:
                 direction = relative
             candidate = (risk, closest_distance, closest_t, direction, identifier)
             if best is None or risk > best[0]:
                 best = candidate
+            if identifier == self._threat_id:
+                current = candidate
+        # Hysteresis: keep facing the current threat unless another contact is
+        # clearly (30%) riskier, so similar contacts do not make the ring swing.
+        if (best is not None and current is not None and current[4] != best[4]
+                and current[0] >= 0.18 and best[0] < current[0] * 1.3):
+            best = current
+        self._threat_id = best[4] if best is not None and best[0] >= 0.18 else None
         desired_rotation = 0.0
         risk_info = {"score": 0.0, "contact_id": None, "closest_approach_m": None, "time_to_closest_s": None}
         if best is not None:
@@ -315,15 +329,26 @@ class MissionPlanner:
             risk_info = {"score": round(risk, 3), "contact_id": identifier,
                          "closest_approach_m": round(closest, 2), "time_to_closest_s": round(closest_t, 2)}
             if risk >= 0.18:
-                width = 2 * math.pi / self.fleet_size
-                desired_rotation = (math.atan2(direction[1], direction[0]) + width / 2) % width - width / 2
-        # Pick the nearest ring rotation so vehicles keep their assigned slots.
+                desired_rotation = math.atan2(direction[1], direction[0])
+        # The ring has fleet_size-fold symmetry, so any guard can face the
+        # threat. Turn by the smallest equivalent angle (within +/- half a
+        # sector). Wrapping the target into a fixed +/-60 degree window made
+        # the ring swing up to 120 degrees backwards whenever a threat crossed
+        # a sector edge; now the neighbouring guard takes over instead.
+        width = 2 * math.pi / self.fleet_size
         radius = self.radius + min(uncertainty, 1.0) * 0.35
         rate = min(self.rotation_rate, self.speed_limit * 0.65 / radius)
-        self._rotation += float(np.clip(_angle(desired_rotation - self._rotation), -rate * dt, rate * dt))
+        difference = (desired_rotation - self._rotation + width / 2) % width - width / 2
+        step = float(np.clip(difference, -rate * dt, rate * dt))
+        self._rotation = _angle(self._rotation + step)
         bearing = self.index * 2 * math.pi / self.fleet_size + self._rotation
         radial = np.array([math.cos(bearing), math.sin(bearing), 0.0])
         goal, limited = self._safe_goal(beacon + radius * radial)
+        # When the ring turns toward a threat, each slot moves sideways at
+        # omega * radius. Reporting that motion lets the velocity controller
+        # follow the slot instead of only reacting once it has fallen behind.
+        omega = step / dt if dt > 0 else 0.0
+        self._ring_velocity = omega * radius * np.array([-math.sin(bearing), math.cos(bearing), 0.0])
 
         def contact_margin(candidate):
             margin = math.inf
@@ -478,6 +503,7 @@ class MissionPlanner:
                 self._distance += distance
         self._last_time, self._last_position = now, position.copy()
         self._ingest_rays(rays, position, uncertainty)
+        self._ring_velocity = np.zeros(3)
         if self.mode == "protect":
             goal, anchor, heading, phase, role, risk = self._protect(now, dt, position, diver, observations, uncertainty)
         else:
@@ -495,7 +521,8 @@ class MissionPlanner:
                   "elapsed_s": round(now - self._start, 2),
                   "remaining_s": round(max(0, self.max_duration - (now - self._start)), 2),
                   "localization_std_m": round(uncertainty, 3), "return_reason": self._return_reason,
-                  "risk": risk, "depth_layer": self._target_key[1] if self._target_key is not None else 0,
+                  "risk": risk, "ring_velocity": np.round(self._ring_velocity, 4).tolist(),
+                  "depth_layer": self._target_key[1] if self._target_key is not None else 0,
                   "exploration": {"bounds": self.bounds.tolist(), "origin": self.origin.tolist(),
                                   "depth_layers": self.depth_layers.tolist(),
                                   "observed_cells": observed, "total_cells": len(self._cells),
