@@ -152,6 +152,67 @@ class MissionTests(unittest.TestCase):
             for other in plans[index + 1:]:
                 self.assertGreater(np.linalg.norm(plan.goal - other.goal), 9)
 
+    def test_threat_crossing_a_sector_edge_does_not_swing_the_ring_back(self):
+        # A threat moving from 50 to 70 degrees crosses the 60 degree edge
+        # between guard sectors. The ring should keep turning the short way
+        # (+20 degrees), not reverse by about 100 degrees.
+        planner = MissionPlanner(0)
+        beacon = {"position": [0, 0, -10], "velocity": [0, 0, 0]}
+
+        def threat(now, degrees):
+            angle = math.radians(degrees)
+            heading = np.array([math.cos(angle), math.sin(angle), 0.0])
+            return [{"id": "threat", "position": (14 * heading + [0, 0, -10]).tolist(),
+                     "velocity": (-0.8 * heading).tolist(), "classification": "vehicle",
+                     "confidence": 0.9, "position_std_m": 0.1, "last_seen": now}]
+
+        now = 0.0
+        for _ in range(80):  # settle facing 50 degrees
+            beacon["timestamp"] = now
+            planner.plan(now, [6, 0, -10], diver=beacon, observations=threat(now, 50))
+            now += 0.25
+        self.assertAlmostEqual(planner._rotation, math.radians(50), delta=0.05)
+        previous = planner._rotation
+        for _ in range(80):  # threat now at 70 degrees, past the sector edge
+            beacon["timestamp"] = now
+            planner.plan(now, [6, 0, -10], diver=beacon, observations=threat(now, 70))
+            self.assertGreaterEqual(planner._rotation - previous, -1e-9)
+            previous = planner._rotation
+            now += 0.25
+        self.assertAlmostEqual(planner._rotation, math.radians(70), delta=0.05)
+
+    def test_ring_rotation_is_reported_as_slot_velocity(self):
+        planner = MissionPlanner(1)
+        beacon = {"position": [0, 0, -10], "velocity": [0, 0, 0]}
+        turning = None
+        for now in np.arange(0, 3, 0.5):
+            beacon["timestamp"] = float(now)
+            turning = planner.plan(float(now), [6, 0, -10], diver=beacon,
+                                   observations=[contact(float(now))])
+        ring = np.array(turning.status["ring_velocity"])
+        radial = turning.goal - np.array(beacon["position"])
+        self.assertGreater(np.linalg.norm(ring), 0.1)
+        cosine = float(np.dot(ring, radial)) / (np.linalg.norm(ring) * np.linalg.norm(radial))
+        self.assertLess(abs(cosine), 1e-3)  # sideways (tangential) only
+        # With no threat and the ring back home, the slot is not moving.
+        idle = MissionPlanner(1).plan(0, [6, 0, -10], diver=[0, 0, -10])
+        self.assertEqual(idle.status["ring_velocity"], [0.0, 0.0, 0.0])
+
+    def test_similar_contacts_do_not_make_the_ring_flip_between_threats(self):
+        planner = MissionPlanner(0)
+        beacon = {"position": [0, 0, -10], "velocity": [0, 0, 0]}
+        chosen = set()
+        for step, now in enumerate(np.arange(0, 6, 0.5)):
+            beacon["timestamp"] = float(now)
+            # Two approaching contacts whose confidence alternates slightly.
+            north = {**contact(float(now)), "id": "north",
+                     "confidence": 0.90 if step % 2 else 0.86}
+            east = {**contact(float(now), position=(13, -5, -10), velocity=(-0.9, 0.35, 0)),
+                    "id": "east", "confidence": 0.86 if step % 2 else 0.90}
+            plan = planner.plan(float(now), [6, 0, -10], diver=beacon, observations=[north, east])
+            chosen.add(plan.status["risk"]["contact_id"])
+        self.assertEqual(len(chosen), 1)
+
     def test_receding_contact_and_stale_contact_have_less_risk(self):
         approaching = MissionPlanner(1).plan(0, [6, 0, -10], diver=[0, 0, -10],
                                              observations=[contact(0)])
